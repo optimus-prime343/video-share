@@ -1,4 +1,5 @@
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 import type { NextFunction, Request, Response } from 'express'
 import Express from 'express'
 import type { HttpError } from 'http-errors'
@@ -16,6 +17,7 @@ app.use(Express.urlencoded({ extended: true }))
 app.use(Express.json())
 app.use(Express.static('public'))
 // third-party middlewares
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }))
 app.use(cookieParser())
 app.use(morgan('dev'))
 // app.use(multer().any())

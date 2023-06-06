@@ -6,15 +6,28 @@ import {
   TextInput,
   useMantineColorScheme,
 } from '@mantine/core'
+import { closeModal, openModal } from '@mantine/modals'
 import { IconMenu2, IconMoon, IconSearch, IconSun, IconUser } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useCallback } from 'react'
+
+import { AuthModal } from '@/features/auth/components/auth-modal'
 
 const isSignedIn = false
 
 export const Navbar = () => {
   const { classes } = useStyles()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+
+  const openAuthModal = useCallback(() => {
+    const authModalId = 'auth-modal'
+    openModal({
+      modalId: authModalId,
+      title: 'Get started',
+      children: <AuthModal onAuthSuccess={() => closeModal(authModalId)} />,
+    })
+  }, [])
   return (
     <header className={classes.header}>
       <nav className={classes.navbar}>
@@ -41,9 +54,8 @@ export const Navbar = () => {
         <ul className={classes.navbarItems}>
           {isSignedIn ? null : (
             <Button
-              component={Link}
-              href='/auth/login'
               leftIcon={<IconUser />}
+              onClick={openAuthModal}
               radius='xl'
               size='md'
               variant='outline'

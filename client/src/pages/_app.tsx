@@ -1,10 +1,11 @@
-
 import {
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
   MantineProviderProps,
 } from '@mantine/core'
+import { ModalsProvider } from '@mantine/modals'
+import { Notifications } from '@mantine/notifications'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { getCookie, setCookie } from 'cookies-next'
@@ -45,10 +46,13 @@ export default function App({
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={mantineTheme} withGlobalStyles withNormalizeCSS>
+        <Notifications position='top-center' />
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools />
-          <Navbar />
-          <Component {...pageProps} />
+          <ModalsProvider modalProps={{ centered: true }}>
+            <Navbar />
+            <Component {...pageProps} />
+          </ModalsProvider>
         </QueryClientProvider>
       </MantineProvider>
     </ColorSchemeProvider>
