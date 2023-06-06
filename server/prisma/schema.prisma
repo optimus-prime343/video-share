@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum VideoApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  password           String
+  role               Role                @default(USER)
+  status             Status              @default(INACTIVE)
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @default(now()) @map("updated_at")
+  channel            Channel?
+  comments           Comment[]
+  sessions           Session[]
+  verificationTokens VerificationToken[]
+}
+
+model VerificationToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  refreshToken String   @unique @map("refresh_token")
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String   @map("user_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+}
+
+model Channel {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  thumbnail   String?
+  avatar      String?
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @unique @map("user_id")
+  videos      Video[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+}
+
+model Video {
+  id          String              @id @default(uuid())
+  title       String
+  description String?
+  url         String
+  thumbnail   String?
+  views       Int                 @default(0)
+  likes       Int                 @default(0)
+  dislikes    Int                 @default(0)
+  status      VideoApprovalStatus @default(PENDING)
+  channel     Channel             @relation(fields: [channelId], references: [id])
+  channelId   String              @map("channel_id")
+  comments    Comment[]
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @default(now()) @map("updated_at")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  text      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+  video     Video    @relation(fields: [videoId], references: [id])
+  videoId   String   @map("video_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+  channelId String?  @map("channel_id")
+}
