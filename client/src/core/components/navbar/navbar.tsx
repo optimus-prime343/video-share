@@ -13,13 +13,13 @@ import Link from 'next/link'
 import { useCallback } from 'react'
 
 import { AuthModal } from '@/features/auth/components/auth-modal'
-
-const isSignedIn = false
+import { useUser } from '@/features/auth/hooks/use-user'
 
 export const Navbar = () => {
   const { classes } = useStyles()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
+  const { data: user } = useUser()
   const openAuthModal = useCallback(() => {
     const authModalId = 'auth-modal'
     openModal({
@@ -52,7 +52,7 @@ export const Navbar = () => {
           size='md'
         />
         <ul className={classes.navbarItems}>
-          {isSignedIn ? null : (
+          {user ? null : (
             <Button
               leftIcon={<IconUser />}
               onClick={openAuthModal}
