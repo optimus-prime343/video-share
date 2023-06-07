@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo } from 'react'
 
+import { LoggedInMenu } from '@/core/components/layouts/navbar/logged-in-menu'
 import { SideBar } from '@/core/components/layouts/sidebar'
 import { AuthModal } from '@/features/auth/components/auth-modal'
 import { useUser } from '@/features/auth/hooks/use-user'
@@ -76,7 +77,9 @@ export const Navbar = () => {
             size='md'
           />
           <ul className={classes.navbarItems}>
-            {user ? null : (
+            {user ? (
+              <LoggedInMenu />
+            ) : (
               <Button
                 leftIcon={<IconUser />}
                 onClick={openAuthModal}
