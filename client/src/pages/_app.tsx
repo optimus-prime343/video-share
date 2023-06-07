@@ -13,7 +13,7 @@ import type { AppContext, AppProps } from 'next/app'
 import NextApp from 'next/app'
 import { useMemo, useState } from 'react'
 
-import { Navbar } from '@/core/components/navbar'
+import { Navbar } from '@/core/components/layouts/navbar'
 import { COLOR_SCHEME_COOKIE } from '@/core/constants/strings'
 
 export default function App({
