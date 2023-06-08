@@ -1,11 +1,13 @@
 import { Tabs } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconUser } from '@tabler/icons-react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
 
 import { AuthForm } from '@/features/auth/components/login-form'
 import { useLogin } from '@/features/auth/hooks/use-login'
 import { useSignup } from '@/features/auth/hooks/use-signup'
+import { USER_QUERY_KEY } from '@/features/auth/hooks/use-user'
 import { AuthData } from '@/features/auth/schemas/login'
 
 const LOGIN_TAB_VALUE = 'login'
@@ -16,6 +18,7 @@ export interface AuthModalProps {
 }
 
 export const AuthModal = ({ onAuthSuccess }: AuthModalProps) => {
+  const queryClient = useQueryClient()
   const [activeTab, setActiveTab] = useState<string | null>(LOGIN_TAB_VALUE)
 
   const login = useLogin()
@@ -24,7 +27,10 @@ export const AuthModal = ({ onAuthSuccess }: AuthModalProps) => {
   const onLoginFormSubmit = useCallback(
     (data: AuthData) => {
       login.mutate(data, {
-        onSuccess: ({ message }) => onAuthSuccess(message),
+        onSuccess: async ({ message }) => {
+          await queryClient.invalidateQueries(USER_QUERY_KEY)
+          onAuthSuccess(message)
+        },
         onError: error => {
           showNotification({
             title: 'Login failed',
@@ -34,7 +40,7 @@ export const AuthModal = ({ onAuthSuccess }: AuthModalProps) => {
         },
       })
     },
-    [login, onAuthSuccess]
+    [login, onAuthSuccess, queryClient]
   )
   const onSignUpFormSubmit = useCallback(
     (data: AuthData) => {
