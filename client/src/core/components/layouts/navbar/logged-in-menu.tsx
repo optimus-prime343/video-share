@@ -1,5 +1,6 @@
 import { Button, Menu } from '@mantine/core'
 import { IconCast, IconList, IconLogout, IconUser } from '@tabler/icons-react'
+import Link from 'next/link'
 
 export const LoggedInMenu = () => {
   return (
@@ -9,7 +10,9 @@ export const LoggedInMenu = () => {
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>Profile</Menu.Label>
-        <Menu.Item icon={<IconCast />}>My channel</Menu.Item>
+        <Menu.Item component={Link} href='/channel/my-channel' icon={<IconCast />}>
+          My channel
+        </Menu.Item>
         <Menu.Item icon={<IconList />}>Subscriptions</Menu.Item>
         <Menu.Item icon={<IconUser />}>Profile</Menu.Item>
         <Menu.Divider />
