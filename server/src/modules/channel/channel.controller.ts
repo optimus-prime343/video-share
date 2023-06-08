@@ -48,3 +48,13 @@ export const createChannel = expressAsyncHandler(async (req, res, next) => {
     data: newChannel,
   })
 })
+
+export const getUserChannel = expressAsyncHandler(async (_req, res, _next) => {
+  const user = res.locals.user as User
+  const userChannel = await db.channel.findUnique({ where: { userId: user.id } })
+  sendSuccessResponse({
+    res,
+    message: 'User channel fetched successfully',
+    data: userChannel,
+  })
+})

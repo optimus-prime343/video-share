@@ -3,21 +3,35 @@ import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useState } from 'react'
 
 import { PreviewImage } from '@/core/components/preview-image'
-import { ChannelFormData, ChannelFormSchema } from '@/features/channel/schemas/channel'
+import {
+  Channel,
+  ChannelFormData,
+  ChannelFormSchema,
+} from '@/features/channel/schemas/channel'
 
-interface ChannelFormProps {
-  mode: 'create' | 'edit'
+interface CommonChannelFormProps {
   isSubmitting?: boolean
   onSubmit: (data: FormData) => void
 }
-export const ChannelForm = ({ mode, isSubmitting, onSubmit }: ChannelFormProps) => {
+interface UpdateChannelFormProps extends CommonChannelFormProps {
+  mode: 'edit'
+  channel: Channel
+}
+interface CreateChannelFormProps extends CommonChannelFormProps {
+  mode: 'create'
+}
+
+type ChannelFormProps = UpdateChannelFormProps | CreateChannelFormProps
+
+export const ChannelForm = (props: ChannelFormProps) => {
+  const { mode, isSubmitting, onSubmit } = props
   const [thumbnail, setThumbnail] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
 
   const form = useForm<ChannelFormData>({
     initialValues: {
-      name: '',
-      description: '',
+      name: props.mode === 'edit' ? props.channel.name : '',
+      description: props.mode === 'edit' ? props.channel.description : '',
     },
     validate: zodResolver(ChannelFormSchema),
   })
@@ -33,7 +47,6 @@ export const ChannelForm = ({ mode, isSubmitting, onSubmit }: ChannelFormProps) 
     },
     [avatar, onSubmit, thumbnail]
   )
-
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <Stack>
@@ -55,7 +68,11 @@ export const ChannelForm = ({ mode, isSubmitting, onSubmit }: ChannelFormProps) 
           placeholder='Select thumbnail'
           value={thumbnail}
         />
-        <PreviewImage alt='Thumbnail preview image' file={thumbnail} />
+        <PreviewImage
+          alt='Thumbnail preview image'
+          file={thumbnail}
+          src={props.mode === 'edit' ? props.channel.thumbnail : undefined}
+        />
         <FileInput
           accept={'image/*'}
           label='Avatar'
@@ -63,9 +80,13 @@ export const ChannelForm = ({ mode, isSubmitting, onSubmit }: ChannelFormProps) 
           placeholder='Select avatar'
           value={avatar}
         />
-        <PreviewImage alt='Avatar preview image' file={avatar} />
+        <PreviewImage
+          alt='Avatar preview image'
+          file={avatar}
+          src={props.mode === 'edit' ? props.channel.avatar : undefined}
+        />
         <Button loading={isSubmitting} maw='fit-content' type='submit'>
-          {mode === 'create' ? 'Create Channel' : 'Update Channel'}
+          {mode === 'create' ? 'Create Channel' : 'Edit Channel'}
         </Button>
       </Stack>
     </form>

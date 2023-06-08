@@ -1,29 +1,16 @@
-import { Box, Button, Stack, Text, Title } from '@mantine/core'
+import { Box } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback } from 'react'
 
 import { ChannelForm } from '@/features/channel/components/channel-form'
 import { useCreateChannel } from '@/features/channel/hooks/use-create-channel'
+import { useUserChannel } from '@/features/channel/hooks/use-user-channel'
 
-const hasUserCreatedChannel = false
 const MyChannelPage = () => {
-  const [showCreateChannelForm, setShowCreateChannelForm] = useState(false)
+  const { data: channel } = useUserChannel()
   const createChannel = useCreateChannel()
 
-  const ChannelNotCreated = useMemo(
-    () => (
-      <Stack align='center' justify='center' mih='70vh'>
-        <Title>My Channel</Title>
-        <Text>You have not created a channel yet.</Text>
-        <Button maw='fit-content' onClick={() => setShowCreateChannelForm(true)}>
-          Create Channel
-        </Button>
-      </Stack>
-    ),
-    []
-  )
-
-  const handleChannelFormSubmit = useCallback(
+  const handleCreateChannelFormSubmit = useCallback(
     (data: FormData) => {
       createChannel.mutate(data, {
         onSuccess: ({ message, data }) => {
@@ -41,16 +28,21 @@ const MyChannelPage = () => {
     [createChannel]
   )
 
+  const handleUpdateChannelFormSubmit = useCallback((data: FormData) => {
+    console.log(data)
+  }, [])
+
   return (
     <Box p='md'>
-      {!hasUserCreatedChannel && !showCreateChannelForm ? (
-        ChannelNotCreated
-      ) : (
+      {channel ? (
         <ChannelForm
-          isSubmitting={createChannel.isLoading}
-          mode='create'
-          onSubmit={handleChannelFormSubmit}
+          channel={channel}
+          key={channel.id}
+          mode='edit'
+          onSubmit={handleUpdateChannelFormSubmit}
         />
+      ) : (
+        <ChannelForm mode='create' onSubmit={handleCreateChannelFormSubmit} />
       )}
     </Box>
   )

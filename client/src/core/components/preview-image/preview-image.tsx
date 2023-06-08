@@ -2,11 +2,13 @@ import Image, { ImageProps } from 'next/image'
 import { useMemo } from 'react'
 
 export interface PreviewImageProps extends Omit<ImageProps, 'width' | 'height' | 'src'> {
-  file: File | null
+  src?: string
+  file?: File | null
   width?: number
   height?: number
 }
 export const PreviewImage = ({
+  src,
   file,
   width = 600,
   height = 300,
@@ -14,7 +16,10 @@ export const PreviewImage = ({
   style,
   ...rest
 }: PreviewImageProps) => {
-  const previewImageUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file])
+  const previewImageUrl = useMemo(
+    () => (file ? URL.createObjectURL(file) : src ?? null),
+    [file, src]
+  )
   return previewImageUrl ? (
     <Image
       {...rest}
