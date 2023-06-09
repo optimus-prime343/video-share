@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { THUMBNAIL_IMAGE_FIELD, VIDEO_FIELD } from '../../core/constants/strings.js'
 import { FileSchema } from '../../core/schemas/file.js'
 
 export const CreateVideoSchema = z.object({
@@ -7,7 +8,10 @@ export const CreateVideoSchema = z.object({
     title: z.string().min(3).max(255),
     description: z.string().min(3).max(255).optional(),
   }),
-  file: FileSchema,
+  files: z.object({
+    [THUMBNAIL_IMAGE_FIELD]: z.array(FileSchema.optional()),
+    [VIDEO_FIELD]: z.array(FileSchema),
+  }),
 })
 
 export const WatchVideSchema = z.object({

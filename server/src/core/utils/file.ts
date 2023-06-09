@@ -19,3 +19,12 @@ export const videoFileFilter: FileFilterHandler = (_request, file, callback) => 
   }
   callback(null, true)
 }
+
+export const imageOrVideoFileFilter: FileFilterHandler = (_request, file, callback) => {
+  const isValid =
+    IMAGE_FILE_REGEX.test(file.originalname) || VIDEO_FILE_REGEX.test(file.originalname)
+  if (!isValid) {
+    return callback(new Error('Invalid image or video file'))
+  }
+  callback(null, true)
+}
