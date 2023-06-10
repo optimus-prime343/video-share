@@ -5,13 +5,15 @@ import { THUMBNAIL_IMAGE_FIELD, VIDEO_FIELD } from '../../core/constants/strings
 import { authRequired } from '../../core/middlewares/auth-required.js'
 import { validateResource } from '../../core/middlewares/validate-resource.js'
 import { imageOrVideoFileFilter } from '../../core/utils/file.js'
-import { create, renderVideoPlayer, watch } from './video.controller.js'
-import { CreateVideoSchema } from './video.schema.js'
+import { create, getVideos, renderVideoPlayer, watch } from './video.controller.js'
+import { CreateVideoSchema, GetVideosSchema } from './video.schema.js'
 
 const videoRouter = Router()
 
 videoRouter.get('/render-video-player/:videoId', renderVideoPlayer) //! FOR TESTING ONLY
 videoRouter.get('/watch/:videoId', watch)
+
+videoRouter.get('/', validateResource(GetVideosSchema), getVideos)
 
 videoRouter.use(authRequired)
 

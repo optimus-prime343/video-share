@@ -10,7 +10,37 @@ import { StatusCodes } from 'http-status-codes'
 import { db } from '../../core/lib/prisma.js'
 import { sendSuccessResponse } from '../../core/utils/response.js'
 import { uploadFile } from '../../core/utils/upload.js'
-import type { CreateVideoRequest, WatchVideoParams } from './video.schema.js'
+import type { CreateVideoRequest, GetVideosQuery, WatchVideoParams } from './video.schema.js'
+
+export const getVideos = expressAsyncHandler(async (req, res, _next) => {
+  const count = await db.video.count({
+    where: {
+      status: 'APPROVED',
+    },
+  })
+  const { page, perPage } = req.query as unknown as GetVideosQuery
+  const skip = (page - 1) * perPage
+  const totalPages = Math.ceil(count / perPage)
+  const nextPage = page < totalPages ? page + 1 : null
+  const prevPage = page > 1 ? page - 1 : null
+  const videos = await db.video.findMany({
+    where: {
+      status: 'APPROVED',
+    },
+    skip,
+    take: perPage,
+  })
+  sendSuccessResponse({
+    res,
+    message: 'Videos fetched successfully.',
+    data: {
+      videos,
+      nextPage,
+      prevPage,
+      totalPages,
+    },
+  })
+})
 
 export const create = expressAsyncHandler(async (req, res, next) => {
   const user = res.locals.user as User
