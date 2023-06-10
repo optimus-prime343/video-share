@@ -9,6 +9,8 @@ import { Notifications } from '@mantine/notifications'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { getCookie, setCookie } from 'cookies-next'
+import dayjs from 'dayjs'
+import RelativeTime from 'dayjs/plugin/relativeTime'
 import type { AppContext, AppProps } from 'next/app'
 import NextApp from 'next/app'
 import { useMemo, useState } from 'react'
@@ -16,6 +18,7 @@ import { useMemo, useState } from 'react'
 import { Navbar } from '@/core/components/layouts/navbar'
 import { COLOR_SCHEME_COOKIE } from '@/core/constants/strings'
 
+dayjs.extend(RelativeTime)
 export default function App({
   Component,
   pageProps,

@@ -27,6 +27,9 @@ export const getVideos = expressAsyncHandler(async (req, res, _next) => {
     where: {
       status: 'APPROVED',
     },
+    include: {
+      channel: true,
+    },
     skip,
     take: perPage,
   })

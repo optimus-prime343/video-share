@@ -1,13 +1,13 @@
 import { z } from 'zod'
 
-import { getFullImageUrl } from '@/core/utils/image'
+import { getFullUploadUrl } from '@/core/utils/upload'
 
 export const ChannelSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string().optional(),
-  thumbnail: z.string().optional().transform(getFullImageUrl),
-  avatar: z.string().optional().transform(getFullImageUrl),
+  thumbnail: z.string().optional().transform(getFullUploadUrl),
+  avatar: z.string().optional().transform(getFullUploadUrl),
   userId: z.string(),
   createdAt: z.date({ coerce: true }),
   updatedAt: z.date({ coerce: true }),
