@@ -17,7 +17,7 @@ const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => 
   return (
     <Link
       className={classes.videoItem}
-      href={{ pathname: '/watch', query: { v: video.id } }}
+      href={{ pathname: '/watch', query: { id: video.id } }}
       ref={ref}
     >
       {video.thumbnail ? (

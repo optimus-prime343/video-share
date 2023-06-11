@@ -36,6 +36,13 @@ export default function App({
           minHeight: '100vh',
         },
       }),
+      components: {
+        Button: {
+          defaultProps: {
+            radius: 'xl',
+          },
+        },
+      },
     }),
     [colorScheme]
   )
@@ -51,7 +58,7 @@ export default function App({
       <MantineProvider theme={mantineTheme} withGlobalStyles withNormalizeCSS>
         <Notifications position='top-center' />
         <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools />
+          <ReactQueryDevtools position='bottom-right' />
           <ModalsProvider modalProps={{ centered: true }}>
             <Navbar />
             <Component {...pageProps} />

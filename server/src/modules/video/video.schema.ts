@@ -10,6 +10,12 @@ export const GetVideosSchema = z.object({
   }),
 })
 
+export const GetVideoDetailsSchema = z.object({
+  params: z.object({
+    videoId: z.string().uuid(),
+  }),
+})
+
 export const CreateVideoSchema = z.object({
   body: z.object({
     title: z.string().min(3).max(255),
@@ -28,5 +34,6 @@ export const WatchVideSchema = z.object({
 })
 
 export type GetVideosQuery = z.infer<typeof GetVideosSchema>['query']
+export type GetVideoDetailsParams = z.infer<typeof GetVideoDetailsSchema>['params']
 export type CreateVideoRequest = z.infer<typeof CreateVideoSchema>
 export type WatchVideoParams = z.infer<typeof WatchVideSchema>['params']
