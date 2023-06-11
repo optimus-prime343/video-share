@@ -16,16 +16,18 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
     initialValues: {
       title: '',
       description: '',
+      category: '',
     },
     validate: zodResolver(VideoFormSchema),
   })
 
   const handleSubmit = useCallback(
     (data: VideoFormData) => {
-      const { title, description } = data
+      const { title, description, category } = data
       const formData = new FormData()
       formData.append('title', title)
       if (description) formData.append('description', description)
+      formData.append('category', category)
       formData.append('video', videoFile as File)
       if (thumbnailFile) formData.append('thumbnail', thumbnailFile as File)
       onSubmit(formData)
@@ -46,6 +48,12 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           label='Description'
           placeholder='Enter your video description'
           {...form.getInputProps('description')}
+        />
+        <TextInput
+          label='Category'
+          placeholder='Enter your video category'
+          withAsterisk
+          {...form.getInputProps('category')}
         />
         <FileInput
           clearable

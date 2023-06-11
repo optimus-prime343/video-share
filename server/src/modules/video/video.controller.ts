@@ -2,7 +2,7 @@ import { createReadStream } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import type { User } from '@prisma/client'
+import type { User, VideoCategory } from '@prisma/client'
 import expressAsyncHandler from 'express-async-handler'
 import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
@@ -16,6 +16,21 @@ import type {
   GetVideosQuery,
   WatchVideoParams,
 } from './video.schema.js'
+
+// check whether the category already exists and create it if it doesn't
+const createVideoCategoryIfNotExists = async (category: string): Promise<VideoCategory> => {
+  const videoCategoryExists = await db.videoCategory.findFirst({
+    where: {
+      name: category,
+    },
+  })
+  if (videoCategoryExists) return videoCategoryExists
+  return db.videoCategory.create({
+    data: {
+      name: category,
+    },
+  })
+}
 
 export const getVideos = expressAsyncHandler(async (req, res, _next) => {
   const count = await db.video.count({
@@ -34,6 +49,7 @@ export const getVideos = expressAsyncHandler(async (req, res, _next) => {
     },
     include: {
       channel: true,
+      category: true,
     },
     skip,
     take: perPage,
@@ -59,6 +75,7 @@ export const getVideoDetails = expressAsyncHandler(async (req, res, _next) => {
     },
     include: {
       channel: true,
+      category: true,
     },
   })
   sendSuccessResponse({
@@ -79,6 +96,7 @@ export const create = expressAsyncHandler(async (req, res, next) => {
     return next(createHttpError(StatusCodes.BAD_REQUEST, 'You have not created a channel yet'))
   }
   const { body, files } = req as unknown as CreateVideoRequest
+  const { title, description, category } = body
   const videoFile = files.video[0]
   const thumbnailFile = files.thumbnail?.[0]
 
@@ -86,13 +104,20 @@ export const create = expressAsyncHandler(async (req, res, next) => {
 
   const thumbnail = await uploadFile(thumbnailFile, 'thumbnails')
 
+  const videoCategory = await createVideoCategoryIfNotExists(category)
+
   const video = await db.video.create({
     data: {
-      title: body.title,
-      description: body.description,
+      title,
+      description,
       thumbnail,
+      categoryId: videoCategory.id,
       url: uploadVideoUrl as string,
       channelId: channel.id,
+    },
+    include: {
+      channel: true,
+      category: true,
     },
   })
   sendSuccessResponse({

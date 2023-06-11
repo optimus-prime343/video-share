@@ -37,6 +37,7 @@ const MyChannelPage = () => {
       {channel ? (
         <ChannelForm
           channel={channel}
+          isSubmitting={createChannel.isLoading}
           key={channel.id}
           mode='edit'
           onSubmit={handleUpdateChannelFormSubmit}

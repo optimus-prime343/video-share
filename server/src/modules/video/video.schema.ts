@@ -20,6 +20,7 @@ export const CreateVideoSchema = z.object({
   body: z.object({
     title: z.string().min(3).max(255),
     description: z.string().min(3).max(255).optional(),
+    category: z.string().nonempty(),
   }),
   files: z.object({
     [THUMBNAIL_IMAGE_FIELD]: z.array(FileSchema.optional()),
