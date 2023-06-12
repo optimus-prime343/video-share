@@ -24,7 +24,7 @@ export const useSuggestedVideos = (
   categoryId: string | undefined
 ) => {
   return useInfiniteQuery<GetSuggestedVideosResponse, Error>({
-    queryKey: ['videos', 'suggested'],
+    queryKey: ['videos', 'suggested', videoId, categoryId],
     queryFn: ({ pageParam = 1 }) =>
       api
         .GET(GetSuggestedVideosResponseSchema, '/video/suggested-videos', {

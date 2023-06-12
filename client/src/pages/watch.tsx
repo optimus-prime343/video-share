@@ -4,8 +4,11 @@ import { Avatar, Button, createStyles, Group, Paper, Stack, Text, Title } from '
 import { IconDownload, IconShare, IconThumbDown, IconThumbUp } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
+import { useMemo } from 'react'
 
 import Player from '@/core/components/player/player'
+import SuggestedVideoList from '@/features/video/components/suggested-video-list/suggested-video-list'
+import { useSuggestedVideos } from '@/features/video/hooks/use-suggested-videos'
 import { useVideoDetail } from '@/features/video/hooks/use-video-detail'
 
 const WatchPage = () => {
@@ -13,6 +16,11 @@ const WatchPage = () => {
   const { classes } = useStyles()
   const videoId = router.query?.id as string | undefined
   const { data: videoDetail } = useVideoDetail(videoId)
+  const { data: suggestedVideosPages } = useSuggestedVideos(videoId, videoDetail?.category?.id)
+  const suggestedVideos = useMemo(
+    () => suggestedVideosPages?.pages?.flatMap(page => page.videos) ?? [],
+    [suggestedVideosPages?.pages]
+  )
   if (!videoDetail || !videoId) return <p>Video not found</p> //TODO UPDATE UI
   return (
     <div className={classes.container}>
@@ -57,7 +65,9 @@ const WatchPage = () => {
             <Text>{videoDetail.description}</Text>
           </Paper>
         </Stack>
-        <div>Suggested videos</div>
+        <div>
+          <SuggestedVideoList videos={suggestedVideos} />
+        </div>
       </div>
     </div>
   )
