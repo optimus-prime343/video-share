@@ -84,6 +84,17 @@ const WatchPage = () => {
       })
   }, [videoDetail])
 
+  const handleShareVideo = useCallback(() => {
+    if (!videoDetail) return
+    const shareData: ShareData = {
+      title: videoDetail.title,
+      text: videoDetail.description,
+      url: window.location.href,
+    }
+    if (!navigator.canShare(shareData)) return alert('Your browser does not support sharing')
+    navigator.share(shareData).catch(error => console.error('Error sharing', error))
+  }, [videoDetail])
+
   useEffect(() => {
     if (!videoId) return
     updateViewCount.mutate(videoId, {
@@ -132,7 +143,7 @@ const WatchPage = () => {
                   {videoDetail.dislikes}
                 </Button>
               </Button.Group>
-              <Button leftIcon={<IconShare />} variant='light'>
+              <Button leftIcon={<IconShare />} onClick={handleShareVideo} variant='light'>
                 Share
               </Button>
               <Button
