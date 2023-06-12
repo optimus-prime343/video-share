@@ -11,6 +11,7 @@ import {
 } from '@tabler/icons-react'
 import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
+import parse from 'html-react-parser'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo } from 'react'
 
@@ -159,7 +160,7 @@ const WatchPage = () => {
             <Text fw='bold'>
               {videoDetail.views} Views • {dayjs(videoDetail.createdAt).fromNow()}{' '}
             </Text>
-            <Text>{videoDetail.description}</Text>
+            {videoDetail.description ? <Text>{parse(videoDetail.description)}</Text> : null}
           </Paper>
         </Stack>
         <div>
