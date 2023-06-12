@@ -12,6 +12,7 @@ import { sendSuccessResponse } from '../../core/utils/response.js'
 import { uploadFile } from '../../core/utils/upload.js'
 import type {
   CreateVideoRequest,
+  GetSuggestedVideosQuery,
   GetVideoDetailsParams,
   GetVideosQuery,
   WatchVideoParams,
@@ -82,6 +83,45 @@ export const getVideoDetails = expressAsyncHandler(async (req, res, _next) => {
     res,
     message: 'Video fetched successfully.',
     data: video,
+  })
+})
+
+export const getSuggestedVideos = expressAsyncHandler(async (req, res, _next) => {
+  const { page, perPage, videoId, categoryId } =
+    req.query as unknown as GetSuggestedVideosQuery
+  const count = await db.video.count({
+    where: {
+      id: {
+        not: videoId,
+      },
+      status: 'APPROVED',
+      categoryId,
+    },
+  })
+  const totalPages = Math.ceil(count / perPage)
+  const skip = (page - 1) * perPage
+  const nextPage = page < totalPages ? page + 1 : null
+  const prevPage = page > 1 ? page - 1 : null
+  const videos = await db.video.findMany({
+    where: {
+      id: {
+        not: videoId,
+      },
+      status: 'APPROVED',
+      categoryId,
+    },
+    skip,
+    take: perPage,
+  })
+  sendSuccessResponse({
+    res,
+    message: 'Suggested videos fetched successfully.',
+    data: {
+      videos,
+      nextPage,
+      prevPage,
+      totalPages,
+    },
   })
 })
 
