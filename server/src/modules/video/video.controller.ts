@@ -15,6 +15,7 @@ import type {
   GetSuggestedVideosQuery,
   GetVideoDetailsParams,
   GetVideosQuery,
+  UpdateViewCountParams,
   WatchVideoParams,
 } from './video.schema.js'
 
@@ -196,4 +197,26 @@ export const watch = expressAsyncHandler(async (req, res, next) => {
   res.writeHead(StatusCodes.PARTIAL_CONTENT, headers)
   const videoStream = createReadStream(videoUrl, { start, end })
   videoStream.pipe(res)
+})
+
+export const updateViewCount = expressAsyncHandler(async (req, res, next) => {
+  const { videoId } = req.params as UpdateViewCountParams
+  const videoExists = await db.video.findUnique({ where: { id: videoId } })
+  if (!videoExists) {
+    return next(createHttpError(StatusCodes.NOT_FOUND, 'Video not found'))
+  }
+  await db.video.update({
+    where: {
+      id: videoId,
+    },
+    data: {
+      views: {
+        increment: 1,
+      },
+    },
+  })
+  sendSuccessResponse({
+    res,
+    message: 'View count updated successfully.',
+  })
 })

@@ -10,6 +10,7 @@ import {
   getSuggestedVideos,
   getVideoDetails,
   getVideos,
+  updateViewCount,
   watch,
 } from './video.controller.js'
 import {
@@ -17,6 +18,7 @@ import {
   GetSuggestedVideosSchema,
   GetVideoDetailsSchema,
   GetVideosSchema,
+  UpdateViewCountSchema,
 } from './video.schema.js'
 
 const videoRouter = Router()
@@ -28,6 +30,7 @@ videoRouter.get(
   validateResource(GetSuggestedVideosSchema),
   getSuggestedVideos,
 )
+videoRouter.post('/:videoId/view', validateResource(UpdateViewCountSchema), updateViewCount)
 videoRouter.get('/', validateResource(GetVideosSchema), getVideos)
 videoRouter.get('/:videoId', validateResource(GetVideoDetailsSchema), getVideoDetails)
 
