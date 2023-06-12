@@ -71,6 +71,11 @@ const useStyles = createStyles(theme => ({
     textDecoration: 'none',
     color: 'inherit',
     display: 'inline-block',
+    maxWidth: '400px',
+
+    [theme.fn.smallerThan('md')]: {
+      maxWidth: '100%',
+    },
   },
   videoThumbnailContainer: {
     position: 'relative',
