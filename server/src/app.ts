@@ -16,7 +16,6 @@ const app = Express()
 app.use(Express.urlencoded({ extended: true }))
 app.use(Express.json())
 app.use(Express.static('public'))
-app.set('trust proxy', true)
 // third-party middlewares
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }))
 app.use(cookieParser())

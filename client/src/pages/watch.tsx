@@ -1,14 +1,22 @@
 import '@vime/core/themes/default.css'
 
 import { Avatar, Button, createStyles, Group, Paper, Stack, Text, Title } from '@mantine/core'
-import { IconDownload, IconShare, IconThumbDown, IconThumbUp } from '@tabler/icons-react'
+import {
+  IconDownload,
+  IconShare,
+  IconThumbDown,
+  IconThumbUp,
+  IconThumbUpFilled,
+} from '@tabler/icons-react'
 import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import Player from '@/core/components/player/player'
 import SuggestedVideoList from '@/features/video/components/suggested-video-list/suggested-video-list'
+import { useIsVideoLiked } from '@/features/video/hooks/use-is-video-liked'
+import { useLikeVideo } from '@/features/video/hooks/use-like-video'
 import { useSuggestedVideos } from '@/features/video/hooks/use-suggested-videos'
 import { useUpdateViewCount } from '@/features/video/hooks/use-update-view-count'
 import { useVideoDetail } from '@/features/video/hooks/use-video-detail'
@@ -21,12 +29,27 @@ const WatchPage = () => {
 
   const { data: videoDetail } = useVideoDetail(videoId)
   const { data: suggestedVideosPages } = useSuggestedVideos(videoId, videoDetail?.category?.id)
+  const { data: isVideoLiked } = useIsVideoLiked(videoId)
+
   const updateViewCount = useUpdateViewCount()
+  const likeVideo = useLikeVideo()
 
   const suggestedVideos = useMemo(
     () => suggestedVideosPages?.pages?.flatMap(page => page.videos) ?? [],
     [suggestedVideosPages?.pages]
   )
+
+  const handleLikeVideo = useCallback(() => {
+    if (!videoId) return
+    likeVideo.mutate(videoId, {
+      onSuccess: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries(['is-video-liked', videoId]),
+          queryClient.invalidateQueries(['video', videoId]),
+        ])
+      },
+    })
+  }, [likeVideo, queryClient, videoId])
 
   useEffect(() => {
     if (!videoId) return
@@ -61,7 +84,11 @@ const WatchPage = () => {
             </Group>
             <Group>
               <Button.Group>
-                <Button leftIcon={<IconThumbUp />} variant='light'>
+                <Button
+                  leftIcon={isVideoLiked ? <IconThumbUpFilled /> : <IconThumbUp />}
+                  onClick={handleLikeVideo}
+                  variant='light'
+                >
                   {videoDetail.likes}
                 </Button>
                 <Button leftIcon={<IconThumbDown />} variant='light'>

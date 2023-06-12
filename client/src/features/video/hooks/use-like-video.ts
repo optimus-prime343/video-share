@@ -4,16 +4,14 @@ import { z } from 'zod'
 import { api } from '@/core/utils/api'
 import { parseAndThrowErrorResponse } from '@/core/utils/response'
 
-export const UpdateViewCountResponseSchema = z.object({
+export const LikeVideoResponseSchema = z.object({
   message: z.string(),
 })
-export const useUpdateViewCount = () => {
+export const useLikeVideo = () => {
   return useMutation<string, Error, string>({
     mutationFn: videoId =>
       api
-        .POST(UpdateViewCountResponseSchema, `/video/update-video-views`, {
-          params: { videoId },
-        })
+        .POST(LikeVideoResponseSchema, `/video/like-video`, { params: { videoId } })
         .then(res => res.message)
         .catch(parseAndThrowErrorResponse),
   })
