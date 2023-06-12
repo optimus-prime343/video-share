@@ -1,4 +1,4 @@
-import type { SignOptions } from 'jsonwebtoken'
+import type { JwtPayload, SignOptions } from 'jsonwebtoken'
 import jsonwebtoken from 'jsonwebtoken'
 
 export const signJWT = <T extends object>(
@@ -13,11 +13,11 @@ export const signJWT = <T extends object>(
     })
   })
 }
-export const verifyJwt = <T>(token: string, secret: string): Promise<T> => {
+export const verifyJwt = <T>(token: string, secret: string): Promise<T & JwtPayload> => {
   return new Promise((resolve, reject) => {
     jsonwebtoken.verify(token, secret, (error, decoded) => {
       if (error) return reject(error)
-      return resolve(decoded as T)
+      return resolve(decoded as T & JwtPayload)
     })
   })
 }

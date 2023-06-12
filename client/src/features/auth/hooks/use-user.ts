@@ -9,12 +9,12 @@ export const USER_QUERY_KEY = ['user']
 
 const UserResponseSchema = z.object({
   data: z.object({
-    user: UserSchema,
+    user: UserSchema.nullable(),
   }),
 })
 
 export const useUser = () => {
-  return useQuery<User, Error>({
+  return useQuery<User | null, Error>({
     queryKey: USER_QUERY_KEY,
     queryFn: () =>
       api

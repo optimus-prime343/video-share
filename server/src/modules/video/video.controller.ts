@@ -189,11 +189,7 @@ export const watch = expressAsyncHandler(async (req, res, next) => {
   const videoUrl = path.join(process.cwd(), 'public', video.url)
   const { size } = await fs.stat(videoUrl)
   const chunkSize = 10 ** 6
-  const rangeStart = req.headers.range
-  console.log('🚀 ~ file: video.controller.ts:65 ~ watchVideo ~ rangeStart:', rangeStart)
-  if (!rangeStart) {
-    return next(createHttpError(StatusCodes.BAD_REQUEST, 'Range header is required'))
-  }
+  const rangeStart = req.headers.range ?? 'bytes=0-'
   const start = parseInt(rangeStart.replace(/\D/g, ''))
   const end = Math.min(start + chunkSize, size - 1)
 

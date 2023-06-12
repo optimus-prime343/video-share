@@ -1,11 +1,11 @@
 import crypto from 'node:crypto'
 
-import type { User } from '@prisma/client'
 import argon2 from 'argon2'
 import type { CookieOptions } from 'express'
 import expressAsyncHandler from 'express-async-handler'
 import createHttpError from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
+import jsonwebtoken from 'jsonwebtoken'
 
 import { VERIFICATION_TOKEN_EXPIRES_IN_MS } from '../../core/constants/numbers.js'
 import {
@@ -16,7 +16,7 @@ import {
 import { signJWT, verifyJwt } from '../../core/lib/jsonwebtoken.js'
 import { sendMail } from '../../core/lib/nodemailer.js'
 import { db } from '../../core/lib/prisma.js'
-import { sendSuccessResponse } from '../../core/utils/response.js'
+import { sendErrorResponse, sendSuccessResponse } from '../../core/utils/response.js'
 import type {
   CreateAccountPayload,
   LoginPayload,
@@ -118,7 +118,7 @@ const login = expressAsyncHandler(async (req, res, next) => {
   const accessToken = await signJWT(payload, process.env.JWT_ACCESS_TOKEN_SECRET, {
     expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
   })
-  const refreshToken = await signJWT(payload, process.env.JWT_ACCESS_TOKEN_SECRET, {
+  const refreshToken = await signJWT(payload, process.env.JWT_REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN,
   })
   const cookieOptions: CookieOptions = {
@@ -134,13 +134,75 @@ const login = expressAsyncHandler(async (req, res, next) => {
   })
 })
 
-const profile = expressAsyncHandler(async (_req, res, _next) => {
-  const user = res.locals.user as User
-  const { password: _p, ...rest } = user
+const profile = expressAsyncHandler(async (req, res, _next) => {
+  const accessToken = req.cookies?.[ACCESS_TOKEN_NAME] as string | undefined
+  const refreshToken = req.cookies?.[REFRESH_TOKEN_NAME] as string | undefined
+  // if accessToken and refreshToken are not present in cookies, return null user
+  if (!accessToken || !refreshToken) {
+    return sendSuccessResponse({
+      res,
+      data: {
+        user: null,
+      },
+    })
+  }
+
+  await verifyJwt(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET)
+    .then(async () => {
+      await verifyJwt<{ id: string }>(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET)
+        .then(async ({ id }) => {
+          const user = await db.user.findUnique({
+            where: {
+              id,
+            },
+            select: {
+              id: true,
+              email: true,
+              status: true,
+              createdAt: true,
+              updatedAt: true,
+              role: true,
+            },
+          })
+          sendSuccessResponse({
+            res,
+            message: 'User profile fetched successfully.',
+            data: {
+              user,
+            },
+          })
+        })
+        .catch(error => {
+          if (error instanceof jsonwebtoken.TokenExpiredError) {
+            sendErrorResponse({
+              res,
+              message: error.message,
+              stack: error.stack,
+              meta: {
+                code: 'ACCESS_TOKEN_EXPIRED',
+              },
+            })
+          }
+        })
+    })
+    .catch(error => {
+      if (error instanceof jsonwebtoken.TokenExpiredError) {
+        // if refreshToken is expired, clear both the accessToken and the refreshToken from the client
+        res.clearCookie(ACCESS_TOKEN_NAME)
+        res.clearCookie(REFRESH_TOKEN_NAME)
+        sendSuccessResponse({
+          res,
+          data: {
+            user: null,
+          },
+        })
+      }
+    })
+  // const { password: _p, ...rest } = user
   return sendSuccessResponse({
     res,
     data: {
-      user: rest,
+      user: null,
     },
   })
 })

@@ -21,6 +21,6 @@ authRouter.get(
   verifyAccount,
 )
 authRouter.get('/refresh-token', authRequired, refreshToken)
-authRouter.get('/profile', authRequired, profile)
+authRouter.get('/profile', profile)
 
 export { authRouter }
