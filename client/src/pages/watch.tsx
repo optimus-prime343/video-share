@@ -70,6 +70,20 @@ const WatchPage = () => {
     })
   }, [dislikeVideo, queryClient, videoId])
 
+  const handleDownloadVideo = useCallback(() => {
+    if (!videoDetail) return
+    fetch(videoDetail.url)
+      .then(response => response.blob())
+      .then(blob => {
+        const link = document.createElement('a')
+        const url = URL.createObjectURL(blob)
+        link.setAttribute('href', url)
+        link.setAttribute('download', videoDetail.title)
+        link.click()
+        URL.revokeObjectURL(url)
+      })
+  }, [videoDetail])
+
   useEffect(() => {
     if (!videoId) return
     updateViewCount.mutate(videoId, {
@@ -121,7 +135,11 @@ const WatchPage = () => {
               <Button leftIcon={<IconShare />} variant='light'>
                 Share
               </Button>
-              <Button leftIcon={<IconDownload />} variant='light'>
+              <Button
+                leftIcon={<IconDownload />}
+                onClick={handleDownloadVideo}
+                variant='light'
+              >
                 Download
               </Button>
             </Group>

@@ -138,7 +138,6 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
   const accessToken = req.cookies?.[ACCESS_TOKEN_NAME] as string | undefined
   const refreshToken = req.cookies?.[REFRESH_TOKEN_NAME] as string | undefined
   // if accessToken and refreshToken are not present in cookies, return null user
-  console.log({ accessToken, refreshToken })
   if (!accessToken || !refreshToken) {
     return sendSuccessResponse({
       res,
@@ -200,12 +199,6 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
         })
       }
     })
-  sendSuccessResponse({
-    res,
-    data: {
-      user: null,
-    },
-  })
 })
 
 const refreshToken = expressAsyncHandler(async (req, res, next) => {
