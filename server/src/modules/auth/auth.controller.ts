@@ -198,13 +198,6 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
         })
       }
     })
-  // const { password: _p, ...rest } = user
-  return sendSuccessResponse({
-    res,
-    data: {
-      user: null,
-    },
-  })
 })
 
 const refreshToken = expressAsyncHandler(async (req, res, next) => {

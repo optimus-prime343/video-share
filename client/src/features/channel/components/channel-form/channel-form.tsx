@@ -1,7 +1,8 @@
-import { Button, FileInput, Stack, Textarea, TextInput } from '@mantine/core'
+import { Button, FileInput, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useState } from 'react'
 
+import { CustomRichTextEditor } from '@/core/components/custom-rich-text-editor'
 import { PreviewImage } from '@/core/components/preview-image'
 import {
   Channel,
@@ -56,10 +57,10 @@ export const ChannelForm = (props: ChannelFormProps) => {
           withAsterisk
           {...form.getInputProps('name')}
         />
-        <Textarea
-          label='Description'
+        <CustomRichTextEditor
+          content={form.values.description ?? ''}
+          onContentChange={content => form.setFieldValue('description', content)}
           placeholder='Enter your channel description'
-          {...form.getInputProps('description')}
         />
         <FileInput
           accept='image/*'

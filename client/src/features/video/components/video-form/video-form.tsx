@@ -1,7 +1,8 @@
-import { Button, FileInput, Stack, Textarea, TextInput } from '@mantine/core'
+import { Button, FileInput, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useState } from 'react'
 
+import { CustomRichTextEditor } from '@/core/components/custom-rich-text-editor'
 import { VideoFormData, VideoFormSchema } from '@/features/video/schemas/video'
 
 export interface VideoFormProps {
@@ -44,11 +45,6 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           withAsterisk
           {...form.getInputProps('title')}
         />
-        <Textarea
-          label='Description'
-          placeholder='Enter your video description'
-          {...form.getInputProps('description')}
-        />
         <TextInput
           label='Category'
           placeholder='Enter your video category'
@@ -61,6 +57,11 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           onChange={setVideoFile}
           placeholder='Upload your video'
           value={videoFile}
+        />
+        <CustomRichTextEditor
+          content={form.values.description ?? ''}
+          onContentChange={content => form.setFieldValue('description', content)}
+          placeholder='Enter your video description'
         />
         <FileInput
           clearable
