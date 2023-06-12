@@ -28,7 +28,7 @@ export const GetSuggestedVideosSchema = z.object({
 export const CreateVideoSchema = z.object({
   body: z.object({
     title: z.string().min(3).max(255),
-    description: z.string().min(3).max(255).optional(),
+    description: z.string().min(3).optional(),
     category: z.string().nonempty(),
   }),
   files: z.object({
