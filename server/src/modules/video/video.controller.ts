@@ -167,17 +167,6 @@ export const create = expressAsyncHandler(async (req, res, next) => {
   })
 })
 
-export const renderVideoPlayer = expressAsyncHandler(async (req, res, _next) => {
-  const { videoId } = req.params as WatchVideoParams
-  const videoSrc = `http://localhost:3000/api/v1/video/watch/${videoId}`
-  res.send(`
-    <video width="800" height="400" controls>
-        <source src="${videoSrc}" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-  `)
-})
-
 export const watch = expressAsyncHandler(async (req, res, next) => {
   const { videoId } = req.params as WatchVideoParams
   const video = await db.video.findUnique({

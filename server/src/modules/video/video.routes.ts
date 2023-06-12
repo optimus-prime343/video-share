@@ -10,7 +10,6 @@ import {
   getSuggestedVideos,
   getVideoDetails,
   getVideos,
-  renderVideoPlayer,
   watch,
 } from './video.controller.js'
 import {
@@ -22,7 +21,6 @@ import {
 
 const videoRouter = Router()
 
-videoRouter.get('/render-video-player/:videoId', renderVideoPlayer) //! FOR TESTING ONLY
 videoRouter.get('/watch/:videoId', watch)
 
 videoRouter.get(
