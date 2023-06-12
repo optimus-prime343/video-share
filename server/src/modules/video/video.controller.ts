@@ -110,6 +110,10 @@ export const getSuggestedVideos = expressAsyncHandler(async (req, res, _next) =>
       status: 'APPROVED',
       categoryId,
     },
+    include: {
+      channel: true,
+      category: true,
+    },
     skip,
     take: perPage,
   })
