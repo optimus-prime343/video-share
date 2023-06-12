@@ -1,10 +1,15 @@
-import { AxiosInstance, AxiosRequestConfig, Method } from 'axios'
+import { QueryClient } from '@tanstack/react-query'
+import axios, { AxiosInstance, AxiosRequestConfig, Method } from 'axios'
 import { z, ZodTypeAny } from 'zod'
 
 import { axiosInstance } from '@/core/lib/axios'
 
 class Api {
-  constructor(private readonly axiosInstance: AxiosInstance) {}
+  private readonly queryClient: QueryClient
+  constructor(private readonly axiosInstance: AxiosInstance) {
+    this.refreshTokenInterceptor()
+    this.queryClient = new QueryClient()
+  }
 
   public async GET<TSchema extends ZodTypeAny>(
     schema: TSchema,
@@ -64,6 +69,27 @@ class Api {
       console.error(error)
       throw error
     }
+  }
+  private refreshTokenInterceptor() {
+    this.axiosInstance.interceptors.response.use(
+      response => response,
+      async error => {
+        const { config } = error
+        const isJwtExpiredMessage = error?.response?.data?.message === 'jwt expired'
+        if (!isJwtExpiredMessage) return Promise.reject(error)
+        return axios
+          .get('/auth/refresh-token', {
+            baseURL: process.env.NEXT_PUBLIC_API_REQUEST_URL ?? 'http://localhost:8000/api/v1',
+            withCredentials: true,
+            timeout: 30000,
+          })
+          .then(async () => {
+            await this.queryClient.invalidateQueries(['user'])
+            return this.axiosInstance(config)
+          })
+          .catch(error => Promise.reject(error))
+      }
+    )
   }
 }
 

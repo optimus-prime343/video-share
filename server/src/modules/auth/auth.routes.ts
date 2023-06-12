@@ -1,6 +1,5 @@
 import { Router } from 'express'
 
-import { authRequired } from '../../core/middlewares/auth-required.js'
 import { validateResource } from '../../core/middlewares/validate-resource.js'
 import {
   createAccount,
@@ -20,7 +19,7 @@ authRouter.get(
   validateResource(VerifyAccountSchema),
   verifyAccount,
 )
-authRouter.get('/refresh-token', authRequired, refreshToken)
+authRouter.get('/refresh-token', refreshToken)
 authRouter.get('/profile', profile)
 
 export { authRouter }

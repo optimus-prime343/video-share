@@ -7,11 +7,13 @@ import { validateResource } from '../../core/middlewares/validate-resource.js'
 import { imageOrVideoFileFilter } from '../../core/utils/file.js'
 import {
   createVideo,
+  dislikeVideo,
   getSuggestedVideos,
   getVideoDetails,
   getVideos,
   likeVideo,
   updateViewCount,
+  videoDislikedStatus,
   videoLikedStatus,
   watch,
 } from './video.controller.js'
@@ -50,6 +52,18 @@ videoRouter.get(
   authRequired,
   validateResource(LikeDislikeVideoSchema),
   videoLikedStatus,
+)
+videoRouter.post(
+  '/dislike-video',
+  authRequired,
+  validateResource(LikeDislikeVideoSchema),
+  dislikeVideo,
+)
+videoRouter.get(
+  '/is-video-disliked',
+  authRequired,
+  validateResource(LikeDislikeVideoSchema),
+  videoDislikedStatus,
 )
 videoRouter.get('/', validateResource(GetVideosSchema), getVideos)
 videoRouter.get('/:videoId', validateResource(GetVideoDetailsSchema), getVideoDetails)

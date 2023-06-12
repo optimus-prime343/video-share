@@ -20,7 +20,6 @@ app.use(Express.static('public'))
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }))
 app.use(cookieParser())
 app.use(morgan('dev'))
-// app.use(multer().any())
 // app routes
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/channel', channelRouter)

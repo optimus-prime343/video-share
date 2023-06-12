@@ -138,6 +138,7 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
   const accessToken = req.cookies?.[ACCESS_TOKEN_NAME] as string | undefined
   const refreshToken = req.cookies?.[REFRESH_TOKEN_NAME] as string | undefined
   // if accessToken and refreshToken are not present in cookies, return null user
+  console.log({ accessToken, refreshToken })
   if (!accessToken || !refreshToken) {
     return sendSuccessResponse({
       res,
@@ -164,7 +165,7 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
               role: true,
             },
           })
-          sendSuccessResponse({
+          return sendSuccessResponse({
             res,
             message: 'User profile fetched successfully.',
             data: {
@@ -174,7 +175,7 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
         })
         .catch(error => {
           if (error instanceof jsonwebtoken.TokenExpiredError) {
-            sendErrorResponse({
+            return sendErrorResponse({
               res,
               message: error.message,
               stack: error.stack,
@@ -186,11 +187,12 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
         })
     })
     .catch(error => {
+      console.log('edasdasdas', error.message)
       if (error instanceof jsonwebtoken.TokenExpiredError) {
         // if refreshToken is expired, clear both the accessToken and the refreshToken from the client
         res.clearCookie(ACCESS_TOKEN_NAME)
         res.clearCookie(REFRESH_TOKEN_NAME)
-        sendSuccessResponse({
+        return sendSuccessResponse({
           res,
           data: {
             user: null,
@@ -198,6 +200,12 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
         })
       }
     })
+  sendSuccessResponse({
+    res,
+    data: {
+      user: null,
+    },
+  })
 })
 
 const refreshToken = expressAsyncHandler(async (req, res, next) => {
@@ -213,7 +221,7 @@ const refreshToken = expressAsyncHandler(async (req, res, next) => {
   const accessToken = await signJWT(payload, process.env.JWT_ACCESS_TOKEN_SECRET, {
     expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
   })
-  const newRefreshToken = await signJWT(payload, process.env.JWT_ACCESS_TOKEN_SECRET, {
+  const newRefreshToken = await signJWT(payload, process.env.JWT_REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN,
   })
   const cookieOptions: CookieOptions = {

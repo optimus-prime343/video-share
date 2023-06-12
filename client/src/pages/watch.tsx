@@ -5,6 +5,7 @@ import {
   IconDownload,
   IconShare,
   IconThumbDown,
+  IconThumbDownFilled,
   IconThumbUp,
   IconThumbUpFilled,
 } from '@tabler/icons-react'
@@ -15,6 +16,8 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import Player from '@/core/components/player/player'
 import SuggestedVideoList from '@/features/video/components/suggested-video-list/suggested-video-list'
+import { useDislikeVideo } from '@/features/video/hooks/use-dislike-video'
+import { useIsVideoDisliked } from '@/features/video/hooks/use-is-video-disliked'
 import { useIsVideoLiked } from '@/features/video/hooks/use-is-video-liked'
 import { useLikeVideo } from '@/features/video/hooks/use-like-video'
 import { useSuggestedVideos } from '@/features/video/hooks/use-suggested-videos'
@@ -30,9 +33,11 @@ const WatchPage = () => {
   const { data: videoDetail } = useVideoDetail(videoId)
   const { data: suggestedVideosPages } = useSuggestedVideos(videoId, videoDetail?.category?.id)
   const { data: isVideoLiked } = useIsVideoLiked(videoId)
+  const { data: isVideoDisliked } = useIsVideoDisliked(videoId)
 
   const updateViewCount = useUpdateViewCount()
   const likeVideo = useLikeVideo()
+  const dislikeVideo = useDislikeVideo()
 
   const suggestedVideos = useMemo(
     () => suggestedVideosPages?.pages?.flatMap(page => page.videos) ?? [],
@@ -44,12 +49,26 @@ const WatchPage = () => {
     likeVideo.mutate(videoId, {
       onSuccess: async () => {
         await Promise.all([
+          queryClient.invalidateQueries(['is-video-disliked', videoId]),
           queryClient.invalidateQueries(['is-video-liked', videoId]),
           queryClient.invalidateQueries(['video', videoId]),
         ])
       },
     })
   }, [likeVideo, queryClient, videoId])
+
+  const handleDislikeVideo = useCallback(() => {
+    if (!videoId) return
+    dislikeVideo.mutate(videoId, {
+      onSuccess: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries(['is-video-disliked', videoId]),
+          queryClient.invalidateQueries(['is-video-liked', videoId]),
+          queryClient.invalidateQueries(['video', videoId]),
+        ])
+      },
+    })
+  }, [dislikeVideo, queryClient, videoId])
 
   useEffect(() => {
     if (!videoId) return
@@ -91,7 +110,11 @@ const WatchPage = () => {
                 >
                   {videoDetail.likes}
                 </Button>
-                <Button leftIcon={<IconThumbDown />} variant='light'>
+                <Button
+                  leftIcon={isVideoDisliked ? <IconThumbDownFilled /> : <IconThumbDown />}
+                  onClick={handleDislikeVideo}
+                  variant='light'
+                >
                   {videoDetail.dislikes}
                 </Button>
               </Button.Group>

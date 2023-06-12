@@ -225,6 +225,32 @@ export const updateViewCount = expressAsyncHandler(async (req, res, next) => {
 export const likeVideo = expressAsyncHandler(async (req, res, _next) => {
   const user = res.locals.user as User
   const { videoId } = req.query as LikeDislikeVideoQuery
+  const alreadyDislikedVideo = await db.dislikedVideo.findFirst({
+    where: {
+      userId: user.id,
+      videoId,
+    },
+    include: {
+      video: true,
+    },
+  })
+  if (alreadyDislikedVideo) {
+    await db.dislikedVideo.delete({
+      where: {
+        id: alreadyDislikedVideo.id,
+      },
+    })
+    await db.video.update({
+      where: {
+        id: videoId,
+      },
+      data: {
+        dislikes: {
+          decrement: alreadyDislikedVideo.video.dislikes > 0 ? 1 : 0,
+        },
+      },
+    })
+  }
   const alreadyLikedVideo = await db.likedVideo.findFirst({
     where: {
       userId: user.id,
@@ -291,6 +317,104 @@ export const videoLikedStatus = expressAsyncHandler(async (req, res, _next) => {
     message: 'Video liked status fetched successfully.',
     data: {
       isLiked: !!hasAlreadyLiked,
+    },
+  })
+})
+
+export const dislikeVideo = expressAsyncHandler(async (req, res, _next) => {
+  const user = res.locals.user as User
+  const { videoId } = req.query as LikeDislikeVideoQuery
+  const alreadyLikedVideo = await db.likedVideo.findFirst({
+    where: {
+      userId: user.id,
+      videoId,
+    },
+    include: {
+      video: true,
+    },
+  })
+  if (alreadyLikedVideo) {
+    await db.likedVideo.delete({
+      where: {
+        id: alreadyLikedVideo.id,
+      },
+    })
+    await db.video.update({
+      where: {
+        id: videoId,
+      },
+      data: {
+        likes: {
+          decrement: alreadyLikedVideo.video.likes > 0 ? 1 : 0,
+        },
+      },
+    })
+  }
+  const alreadyDislikedVideo = await db.dislikedVideo.findFirst({
+    where: {
+      userId: user.id,
+      videoId,
+    },
+    include: {
+      video: true,
+    },
+  })
+  if (alreadyDislikedVideo) {
+    await db.dislikedVideo.delete({
+      where: {
+        id: alreadyDislikedVideo.id,
+      },
+    })
+    await db.video.update({
+      where: {
+        id: videoId,
+      },
+      data: {
+        dislikes: {
+          decrement: alreadyDislikedVideo.video.dislikes > 0 ? 1 : 0,
+        },
+      },
+    })
+    return sendSuccessResponse({
+      res,
+      message: 'Video undisliked successfully.',
+    })
+  }
+  await db.dislikedVideo.create({
+    data: {
+      userId: user.id,
+      videoId,
+    },
+  })
+  await db.video.update({
+    where: {
+      id: videoId,
+    },
+    data: {
+      dislikes: {
+        increment: 1,
+      },
+    },
+  })
+  sendSuccessResponse({
+    res,
+    message: 'Video disliked successfully.',
+  })
+})
+
+export const videoDislikedStatus = expressAsyncHandler(async (req, res, _next) => {
+  const user = res.locals.user as User
+  const { videoId } = req.query as LikeDislikeVideoQuery
+  const hasAlreadyDisliked = await db.dislikedVideo.findFirst({
+    where: {
+      userId: user.id,
+      videoId,
+    },
+  })
+  sendSuccessResponse({
+    res,
+    data: {
+      isDisliked: !!hasAlreadyDisliked,
     },
   })
 })
