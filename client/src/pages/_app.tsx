@@ -13,7 +13,7 @@ import dayjs from 'dayjs'
 import RelativeTime from 'dayjs/plugin/relativeTime'
 import type { AppContext, AppProps } from 'next/app'
 import NextApp from 'next/app'
-import { Montserrat } from 'next/font/google'
+import { Roboto, Roboto_Mono } from 'next/font/google'
 import { useMemo, useState } from 'react'
 
 import { Navbar } from '@/core/components/layouts/navbar'
@@ -21,9 +21,15 @@ import { COLOR_SCHEME_COOKIE } from '@/core/constants/strings'
 
 dayjs.extend(RelativeTime)
 
-const montserrat = Montserrat({
-  subsets: ['vietnamese'],
-  variable: '--montserrat',
+const roboto = Roboto({
+  subsets: ['latin-ext'],
+  weight: ['400', '500', '700', '900'],
+  variable: '--roboto',
+})
+const robotoMono = Roboto_Mono({
+  subsets: ['latin-ext'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--roboto-mono',
 })
 export default function App({
   Component,
@@ -37,7 +43,8 @@ export default function App({
     () => ({
       colorScheme,
       primaryColor: 'grape',
-      fontFamily: `var(--${montserrat.variable})`,
+      fontFamily: roboto.style.fontFamily,
+      fontFamilyMonospace: robotoMono.style.fontFamily,
       globalStyles: () => ({
         body: {
           minHeight: '100vh',
