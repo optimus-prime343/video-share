@@ -27,6 +27,9 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import Player from '@/core/components/player/player'
 import { formatCount } from '@/core/utils/count'
+import CommentForm from '@/features/comment/components/comment-form/comment-form'
+import CommentList from '@/features/comment/components/comment-list/comment-list'
+import { useComments } from '@/features/comment/hooks/use-comments'
 import SuggestedVideoList from '@/features/video/components/suggested-video-list/suggested-video-list'
 import { useDislikeVideo } from '@/features/video/hooks/use-dislike-video'
 import { useIsVideoDisliked } from '@/features/video/hooks/use-is-video-disliked'
@@ -46,6 +49,7 @@ const WatchPage = () => {
   const { data: suggestedVideosPages } = useSuggestedVideos(videoId, videoDetail?.category?.id)
   const { data: isVideoLiked } = useIsVideoLiked(videoId)
   const { data: isVideoDisliked } = useIsVideoDisliked(videoId)
+  const { data: commentsPages } = useComments(videoId)
 
   const updateViewCount = useUpdateViewCount()
   const likeVideo = useLikeVideo()
@@ -54,6 +58,11 @@ const WatchPage = () => {
   const suggestedVideos = useMemo(
     () => suggestedVideosPages?.pages?.flatMap(page => page.videos) ?? [],
     [suggestedVideosPages?.pages]
+  )
+
+  const comments = useMemo(
+    () => commentsPages?.pages?.flatMap(page => page.comments) ?? [],
+    [commentsPages?.pages]
   )
 
   const handleLikeVideo = useCallback(() => {
@@ -177,6 +186,8 @@ const WatchPage = () => {
               </Spoiler>
             ) : null}
           </Paper>
+          {videoId ? <CommentForm videoId={videoId} /> : null}
+          <CommentList comments={comments} />
         </Stack>
         <div>
           <SuggestedVideoList videos={suggestedVideos} />

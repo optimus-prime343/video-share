@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const UserSchema = z.object({
   id: z.string(),
-  email: z.string(),
+  email: z.string().optional(),
   role: z.enum(['ADMIN', 'USER']),
   status: z.enum(['ACTIVE', 'INACTIVE']),
   createdAt: z.date({ coerce: true }),
