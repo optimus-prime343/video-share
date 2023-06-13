@@ -1,3 +1,4 @@
+import { Stack } from '@mantine/core'
 import { useCallback } from 'react'
 
 import { SuggestedVideoItem } from '@/features/video/components/suggested-video-item'
@@ -11,6 +12,6 @@ const SuggestedVideoList = ({ videos }: SuggestedVideoListProps) => {
     () => videos.map(video => <SuggestedVideoItem key={video.id} video={video} />),
     [videos]
   )
-  return <div>{renderSuggestedVideos()}</div>
+  return <Stack>{renderSuggestedVideos()}</Stack>
 }
 export default SuggestedVideoList

@@ -24,7 +24,7 @@ const SuggestedVideoItem = forwardRef<HTMLAnchorElement, SuggestedVideoItemProps
           alt={video.title}
           height={100}
           src={video.thumbnail ?? ''}
-          style={{ objectFit: 'cover', borderRadius: '6px' }}
+          style={{ objectFit: 'cover', borderRadius: '6px', minWidth: 150 }}
           width={200}
         />
         <div>
