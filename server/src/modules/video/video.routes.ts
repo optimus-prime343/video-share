@@ -9,6 +9,7 @@ import {
   createVideo,
   dislikeVideo,
   getSuggestedVideos,
+  getVideoCategories,
   getVideoDetails,
   getVideos,
   likeVideo,
@@ -30,6 +31,7 @@ const videoRouter = Router()
 
 videoRouter.get('/watch/:videoId', watch)
 
+videoRouter.get('/categories', getVideoCategories)
 videoRouter.get(
   '/suggested-videos',
   validateResource(GetSuggestedVideosSchema),

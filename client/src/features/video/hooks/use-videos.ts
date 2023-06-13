@@ -17,14 +17,15 @@ export const GetVideosResponseSchema = z.object({
 
 export type GetVideosResponse = z.infer<typeof GetVideosResponseSchema>['data']
 
-export const useVideos = () => {
+export const useVideos = (category: string | undefined) => {
   return useInfiniteQuery({
-    queryKey: ['videos'],
+    queryKey: ['videos', category],
     queryFn: ({ pageParam = 1 }) =>
       api
         .GET(GetVideosResponseSchema, '/video', {
           params: {
             page: pageParam,
+            category,
           },
         })
         .then(res => res.data)

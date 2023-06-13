@@ -25,6 +25,13 @@ export const VideoSchema = z.object({
   updatedAt: z.date({ coerce: true }),
 })
 
+export const VideoCategorySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  createdAt: z.date({ coerce: true }),
+  updatedAt: z.date({ coerce: true }),
+})
+
 export const VideoFormSchema = z.object({
   title: z.string().nonempty(),
   description: z.string().optional(),
@@ -32,4 +39,5 @@ export const VideoFormSchema = z.object({
 })
 
 export type Video = z.infer<typeof VideoSchema>
+export type VideoCategory = z.infer<typeof VideoCategorySchema>
 export type VideoFormData = z.infer<typeof VideoFormSchema>
