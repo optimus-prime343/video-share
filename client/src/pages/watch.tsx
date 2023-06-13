@@ -1,6 +1,16 @@
 import '@vime/core/themes/default.css'
 
-import { Avatar, Button, createStyles, Group, Paper, Stack, Text, Title } from '@mantine/core'
+import {
+  Avatar,
+  Button,
+  createStyles,
+  Group,
+  Paper,
+  Spoiler,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core'
 import {
   IconDownload,
   IconShare,
@@ -161,7 +171,11 @@ const WatchPage = () => {
             <Text fw='bold'>
               {formatCount(videoDetail.views)} Views • {dayjs(videoDetail.createdAt).fromNow()}{' '}
             </Text>
-            {videoDetail.description ? <Text>{parse(videoDetail.description)}</Text> : null}
+            {videoDetail.description ? (
+              <Spoiler hideLabel='Show less' maxHeight={80} showLabel='Show more'>
+                <Text>{parse(videoDetail.description)}</Text>{' '}
+              </Spoiler>
+            ) : null}
           </Paper>
         </Stack>
         <div>
