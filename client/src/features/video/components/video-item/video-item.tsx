@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { forwardRef } from 'react'
 
 import { useCalculateVideoDuration } from '@/core/hooks/use-calculate-video-duration'
+import { formatCount } from '@/core/utils/count'
 import { Video } from '@/features/video/schemas/video'
 
 export interface VideoItemProps {
@@ -60,7 +61,7 @@ const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => 
             <Text>{video.channel.name}</Text>
           </Link>
           <Text>
-            {video.views} views • {dayjs(video.createdAt).fromNow()}
+            {formatCount(video.views)} views • {dayjs(video.createdAt).fromNow()}
           </Text>
         </Stack>
       </div>

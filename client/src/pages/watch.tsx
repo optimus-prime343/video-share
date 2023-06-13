@@ -16,6 +16,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import Player from '@/core/components/player/player'
+import { formatCount } from '@/core/utils/count'
 import SuggestedVideoList from '@/features/video/components/suggested-video-list/suggested-video-list'
 import { useDislikeVideo } from '@/features/video/hooks/use-dislike-video'
 import { useIsVideoDisliked } from '@/features/video/hooks/use-is-video-disliked'
@@ -134,14 +135,14 @@ const WatchPage = () => {
                   onClick={handleLikeVideo}
                   variant='light'
                 >
-                  {videoDetail.likes}
+                  {formatCount(videoDetail.likes)}
                 </Button>
                 <Button
                   leftIcon={isVideoDisliked ? <IconThumbDownFilled /> : <IconThumbDown />}
                   onClick={handleDislikeVideo}
                   variant='light'
                 >
-                  {videoDetail.dislikes}
+                  {formatCount(videoDetail.dislikes)}
                 </Button>
               </Button.Group>
               <Button leftIcon={<IconShare />} onClick={handleShareVideo} variant='light'>
@@ -158,7 +159,7 @@ const WatchPage = () => {
           </Group>
           <Paper className={classes.videoDescription}>
             <Text fw='bold'>
-              {videoDetail.views} Views • {dayjs(videoDetail.createdAt).fromNow()}{' '}
+              {formatCount(videoDetail.views)} Views • {dayjs(videoDetail.createdAt).fromNow()}{' '}
             </Text>
             {videoDetail.description ? <Text>{parse(videoDetail.description)}</Text> : null}
           </Paper>
