@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { forwardRef } from 'react'
 
+import { useCalculateVideoDuration } from '@/core/hooks/use-calculate-video-duration'
 import { Video } from '@/features/video/schemas/video'
 
 export interface VideoItemProps {
@@ -13,7 +14,10 @@ const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => 
   const { video } = props
   const { classes } = useStyles()
 
+  const duration = useCalculateVideoDuration(video.url)
+
   const channelHref = `/channel/${video.channel.id}`
+
   return (
     <Link
       className={classes.videoItem}
@@ -29,7 +33,7 @@ const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => 
             style={{ objectFit: 'cover', borderRadius: '8px' }}
             width={400}
           />
-          <Text className={classes.videoLength}>12:00</Text>
+          <Text className={classes.videoLength}>{duration}</Text>
         </div>
       ) : null}
       <div className={classes.videoItemInfoContainer}>
@@ -85,7 +89,8 @@ const useStyles = createStyles(theme => ({
     position: 'absolute',
     bottom: 4,
     right: 4,
-    backgroundColor: theme.black,
+    backgroundColor:
+      theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[0],
     padding: '2px 4px',
     borderRadius: '4px',
   },

@@ -1,6 +1,6 @@
 import { DefaultUi, Player as VimePlayer, Video } from '@vime/react'
 import assert from 'assert'
-import { ReactNode, useMemo, useRef } from 'react'
+import { forwardRef, ReactNode, useMemo } from 'react'
 
 export interface PlayerProps {
   videoId: string
@@ -10,14 +10,14 @@ export interface PlayerProps {
   muted?: boolean
   children?: ReactNode
 }
-const Player = ({ videoId, poster, children, ...rest }: PlayerProps) => {
-  const playerRef = useRef<HTMLVmPlayerElement | null>(null)
+const Player = forwardRef<HTMLVmPlayerElement, PlayerProps>((props, ref) => {
+  const { videoId, poster, children, ...rest } = props
   const apiUrl = process.env.NEXT_PUBLIC_API_REQUEST_URL
   assert(apiUrl, 'NEXT_PUBLIC_API_REQUEST_URL is not defined')
   const src = useMemo(() => `${apiUrl}/video/watch/${videoId}`, [apiUrl, videoId])
 
   return (
-    <VimePlayer ref={playerRef} {...rest}>
+    <VimePlayer ref={ref} {...rest}>
       <Video crossOrigin='' poster={poster}>
         <source data-src={src} type='video/mp4' />
         <track default kind='subtitles' label='English' src={src} srcLang='en' />
@@ -25,5 +25,7 @@ const Player = ({ videoId, poster, children, ...rest }: PlayerProps) => {
       <DefaultUi>{children}</DefaultUi>
     </VimePlayer>
   )
-}
+})
+Player.displayName = 'Player'
+
 export default Player
