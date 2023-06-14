@@ -25,12 +25,13 @@ import parse from 'html-react-parser'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo } from 'react'
 
+import { InfiniteScroll } from '@/core/components/infinite-scroll'
 import Player from '@/core/components/player/player'
 import { formatCount } from '@/core/utils/count'
 import CommentForm from '@/features/comment/components/comment-form/comment-form'
-import CommentList from '@/features/comment/components/comment-list/comment-list'
+import { CommentItem } from '@/features/comment/components/comment-item'
 import { useComments } from '@/features/comment/hooks/use-comments'
-import SuggestedVideoList from '@/features/video/components/suggested-video-list/suggested-video-list'
+import { SuggestedVideoItem } from '@/features/video/components/suggested-video-item'
 import { useDislikeVideo } from '@/features/video/hooks/use-dislike-video'
 import { useIsVideoDisliked } from '@/features/video/hooks/use-is-video-disliked'
 import { useIsVideoLiked } from '@/features/video/hooks/use-is-video-liked'
@@ -46,10 +47,22 @@ const WatchPage = () => {
   const videoId = router.query?.id as string | undefined
 
   const { data: videoDetail } = useVideoDetail(videoId)
-  const { data: suggestedVideosPages } = useSuggestedVideos(videoId, videoDetail?.category?.id)
+  const {
+    data: suggestedVideosPages,
+    hasNextPage: hasSuggestedVideosNextPage,
+    isFetchingNextPage: isFetchingSuggestedVideosNextPage,
+    fetchNextPage: fetchNextSuggestedVideosPage,
+  } = useSuggestedVideos(videoId, videoDetail?.category?.id)
+
+  const {
+    data: commentsPages,
+    hasNextPage: hasCommentsNextPage,
+    isFetchingNextPage: isFetchingCommentsNextPage,
+    fetchNextPage: fetchNextCommentsPage,
+  } = useComments(videoId)
+
   const { data: isVideoLiked } = useIsVideoLiked(videoId)
   const { data: isVideoDisliked } = useIsVideoDisliked(videoId)
-  const { data: commentsPages } = useComments(videoId)
 
   const updateViewCount = useUpdateViewCount()
   const likeVideo = useLikeVideo()
@@ -181,17 +194,29 @@ const WatchPage = () => {
               {formatCount(videoDetail.views)} Views • {dayjs(videoDetail.createdAt).fromNow()}{' '}
             </Text>
             {videoDetail.description ? (
-              <Spoiler hideLabel='Show less' maxHeight={80} mt="xs" showLabel='Show more'>
+              <Spoiler hideLabel='Show less' maxHeight={80} mt='xs' showLabel='Show more'>
                 <Text>{parse(videoDetail.description)}</Text>{' '}
               </Spoiler>
             ) : null}
           </Paper>
           {videoId ? <CommentForm videoId={videoId} /> : null}
-          <CommentList comments={comments} />
+          <InfiniteScroll
+            as={Stack}
+            fetchNextPage={fetchNextCommentsPage}
+            hasNextPage={hasCommentsNextPage}
+            isFetchingNextPage={isFetchingCommentsNextPage}
+            items={comments}
+            renderItem={comment => <CommentItem comment={comment} />}
+          />
         </Stack>
-        <div>
-          <SuggestedVideoList videos={suggestedVideos} />
-        </div>
+        <InfiniteScroll
+          as={Stack}
+          fetchNextPage={fetchNextSuggestedVideosPage}
+          hasNextPage={hasSuggestedVideosNextPage}
+          isFetchingNextPage={isFetchingSuggestedVideosNextPage}
+          items={suggestedVideos}
+          renderItem={video => <SuggestedVideoItem video={video} />}
+        />
       </div>
     </div>
   )

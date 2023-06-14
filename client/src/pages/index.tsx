@@ -1,16 +1,22 @@
-import { Stack } from '@mantine/core'
+import { Grid, Stack } from '@mantine/core'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 
+import { InfiniteScroll } from '@/core/components/infinite-scroll'
 import { VideoCategoryList } from '@/features/video/components/video-category-list/video-category-list'
-import { VideoList } from '@/features/video/components/video-list'
+import { VideoItem } from '@/features/video/components/video-item'
 import { useVideoCategories } from '@/features/video/hooks/use-video-categories'
 import { useVideos } from '@/features/video/hooks/use-videos'
 
 const HomePage = () => {
   const router = useRouter()
   const category = router.query?.category as string | undefined
-  const { data: videoPages } = useVideos(category)
+  const {
+    data: videoPages,
+    hasNextPage: hasNextVideosPage,
+    isFetchingNextPage: isFetchingNextVideosPage,
+    fetchNextPage: fetchNextVideosPage,
+  } = useVideos(category)
   const { data: videoCategories } = useVideoCategories()
 
   const videos = useMemo(
@@ -20,7 +26,20 @@ const HomePage = () => {
   return (
     <Stack px='md' py='sm'>
       <VideoCategoryList categories={videoCategories ?? []} />
-      <VideoList videos={videos} />
+      <InfiniteScroll
+        align='flex-start'
+        as={Grid}
+        fetchNextPage={fetchNextVideosPage}
+        gutter='lg'
+        hasNextPage={hasNextVideosPage}
+        isFetchingNextPage={isFetchingNextVideosPage}
+        items={videos}
+        renderItem={video => (
+          <Grid.Col span='content'>
+            <VideoItem video={video} />
+          </Grid.Col>
+        )}
+      />
     </Stack>
   )
 }
