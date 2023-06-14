@@ -40,9 +40,6 @@ export const VideoCategoryList = ({ categories }: VideoCategoryListProps) => {
 
 const useStyles = createStyles(theme => ({
   categories: {
-    position: 'sticky',
-    top: 0,
-    left: 0,
     display: 'flex',
     gap: theme.spacing.md,
   },
@@ -51,9 +48,9 @@ const useStyles = createStyles(theme => ({
     color: 'inherit',
     backgroundColor:
       theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[1],
-    paddingInline: theme.spacing.xl,
-    paddingBlock: theme.spacing.xs,
-    borderRadius: theme.radius.xl,
+    paddingInline: '24px',
+    paddingBlock: '6px',
+    borderRadius: '24px',
 
     '&:hover': {
       backgroundColor:
