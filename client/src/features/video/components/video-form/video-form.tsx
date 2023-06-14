@@ -1,4 +1,4 @@
-import { Button, FileInput, Stack, TextInput } from '@mantine/core'
+import { Badge, Button, FileInput, Group, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useState } from 'react'
 
@@ -21,6 +21,22 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
     },
     validate: zodResolver(VideoFormSchema),
   })
+  const renderPopularCategories = useCallback(
+    () =>
+      POPULAR_CATEGORIES.map(category => (
+        <Badge
+          component={Button}
+          key={category}
+          // @ts-expect-error Some issue with Mantine polymorphic types
+          onClick={() => form.setFieldValue('category', category)}
+          size='lg'
+          variant='dot'
+        >
+          {category}
+        </Badge>
+      )),
+    [form]
+  )
 
   const handleSubmit = useCallback(
     (data: VideoFormData) => {
@@ -51,6 +67,7 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           withAsterisk
           {...form.getInputProps('category')}
         />
+        <Group>{renderPopularCategories()}</Group>
         <FileInput
           accept='video/*'
           clearable
@@ -79,4 +96,39 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
     </form>
   )
 }
+const POPULAR_CATEGORIES = [
+  //TODO: STORE AND GET FROM DB INSTEAD
+  'Music',
+  'Comedy',
+  'Gaming',
+  'Education',
+  'Entertainment',
+  'Sports',
+  'News',
+  'Animation',
+  'Film & Animation',
+  'How-to & DIY',
+  'Science & Technology',
+  'Food & Cooking',
+  'Travel',
+  'Fashion & Beauty',
+  'Fitness',
+  'Health & Wellness',
+  'Documentary',
+  'Vlogs',
+  'Pets & Animals',
+  'Kids',
+  'Art & Design',
+  'Business',
+  'Home & Garden',
+  'Automotive',
+  'Technology Reviews',
+  'Politics',
+  'History',
+  'Nature & Wildlife',
+  'Motivation & Self-Improvement',
+  'Parenting',
+  'Photography',
+]
+
 export default VideoForm
