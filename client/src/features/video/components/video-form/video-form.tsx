@@ -75,6 +75,7 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           onChange={setVideoFile}
           placeholder='Upload your video'
           value={videoFile}
+          withAsterisk
         />
         <CustomRichTextEditor
           content={form.values.description ?? ''}
