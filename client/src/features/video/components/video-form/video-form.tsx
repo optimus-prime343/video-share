@@ -30,7 +30,7 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
       if (description) formData.append('description', description)
       formData.append('category', category)
       formData.append('video', videoFile as File)
-      if (thumbnailFile) formData.append('thumbnail', thumbnailFile as File)
+      if (thumbnailFile) formData.append('thumbnail', thumbnailFile)
       onSubmit(formData)
     },
     [onSubmit, thumbnailFile, videoFile]
@@ -52,6 +52,7 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           {...form.getInputProps('category')}
         />
         <FileInput
+          accept='video/*'
           clearable
           label='Video'
           onChange={setVideoFile}
@@ -64,6 +65,7 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           placeholder='Enter your video description'
         />
         <FileInput
+          accept='image/*'
           clearable
           label='Thumbnail'
           onChange={setThumbnailFile}

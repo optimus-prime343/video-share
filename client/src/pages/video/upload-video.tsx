@@ -1,18 +1,25 @@
 import { Box } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
+import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
 import VideoForm from '@/features/video/components/video-form/video-form'
 import { useUploadVideo } from '@/features/video/hooks/use-upload-video'
 
 const UploadVideoPage = () => {
+  const router = useRouter()
   const uploadVideo = useUploadVideo()
 
   const handleUploadVideoFormSubmit = useCallback(
     (data: FormData) => {
       uploadVideo.mutate(data, {
-        onSuccess: video => {
-          console.log(video)
+        onSuccess: async video => {
+          await router.push('/')
+          showNotification({
+            title: 'Video uploaded',
+            message: `Your video ${video.title} has been uploaded successfully.Once it is approved, it will be available to watch.`,
+            color: 'green',
+          })
         },
         onError: error => {
           showNotification({
@@ -23,7 +30,7 @@ const UploadVideoPage = () => {
         },
       })
     },
-    [uploadVideo]
+    [router, uploadVideo]
   )
 
   return (

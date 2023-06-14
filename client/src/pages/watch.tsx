@@ -194,7 +194,7 @@ const WatchPage = () => {
               {formatCount(videoDetail.views)} Views • {dayjs(videoDetail.createdAt).fromNow()}{' '}
             </Text>
             {videoDetail.description ? (
-              <Spoiler hideLabel='Show less' maxHeight={80} mt='xs' showLabel='Show more'>
+              <Spoiler hideLabel='Show less' maxHeight={80} showLabel='Show more'>
                 <Text>{parse(videoDetail.description)}</Text>{' '}
               </Spoiler>
             ) : null}
