@@ -36,11 +36,11 @@ const HomePage = () => {
         hasNextPage={hasNextVideosPage}
         isFetchingNextPage={isFetchingNextVideosPage}
         items={videos}
-        renderItem={video => (
-          <Grid.Col span='content'>
-            <VideoItem video={video} />
-          </Grid.Col>
-        )}
+        renderItem={video => <VideoItem video={video} />}
+        wrapperAs={Grid.Col}
+        wrapperProps={{
+          span: 'content',
+        }}
       />
     </Stack>
   )

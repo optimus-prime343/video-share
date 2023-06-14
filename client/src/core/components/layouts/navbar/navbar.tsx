@@ -99,7 +99,7 @@ const useStyles = createStyles(theme => ({
   header: {
     position: 'sticky',
     top: 0,
-    zIndex: 1,
+    zIndex: 10,
     paddingInline: theme.spacing.lg,
     backgroundColor:
       theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
