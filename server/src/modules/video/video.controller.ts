@@ -41,7 +41,7 @@ export const getVideos = expressAsyncHandler(async (req, res, _next) => {
       status: 'APPROVED',
     },
   })
-  const { page, perPage, category } = req.query as unknown as GetVideosQuery
+  const { page, perPage, category, search } = req.query as unknown as GetVideosQuery
   const skip = (page - 1) * perPage
   const totalPages = Math.ceil(count / perPage)
   const nextPage = page < totalPages ? page + 1 : null
@@ -49,6 +49,10 @@ export const getVideos = expressAsyncHandler(async (req, res, _next) => {
   const videos = await db.video.findMany({
     where: {
       status: 'APPROVED',
+      title: {
+        contains: search,
+        mode: 'insensitive',
+      },
       category: {
         name: category,
       },

@@ -11,12 +11,14 @@ import { useVideos } from '@/features/video/hooks/use-videos'
 const HomePage = () => {
   const router = useRouter()
   const category = router.query?.category as string | undefined
+  const search = router.query?.search as string | undefined
+
   const {
     data: videoPages,
     hasNextPage: hasNextVideosPage,
     isFetchingNextPage: isFetchingNextVideosPage,
     fetchNextPage: fetchNextVideosPage,
-  } = useVideos(category)
+  } = useVideos({ category, search })
   const { data: videoCategories } = useVideoCategories()
 
   const videos = useMemo(

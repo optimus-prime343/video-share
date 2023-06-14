@@ -4,12 +4,11 @@ import {
   createStyles,
   Drawer,
   Group,
-  TextInput,
   useMantineColorScheme,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { closeModal, openModal } from '@mantine/modals'
-import { IconMenu2, IconMoon, IconSearch, IconSun, IconUser } from '@tabler/icons-react'
+import { IconMenu2, IconMoon, IconSun, IconUser } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -19,6 +18,8 @@ import { LoggedInMenu } from '@/core/components/layouts/navbar/logged-in-menu'
 import { SideBar } from '@/core/components/layouts/sidebar'
 import { AuthModal } from '@/features/auth/components/auth-modal'
 import { useUser } from '@/features/auth/hooks/use-user'
+
+import { SearchVideosInput } from './search-videos-input'
 
 export const Navbar = () => {
   const router = useRouter()
@@ -69,13 +70,7 @@ export const Navbar = () => {
             </ActionIcon>
             <Link href='/'>{LogoImage}</Link>
           </Group>
-          <TextInput
-            icon={<IconSearch />}
-            miw='600px'
-            placeholder='Search videos'
-            radius='xl'
-            size='md'
-          />
+          <SearchVideosInput />
           <ul className={classes.navbarItems}>
             {user ? (
               <LoggedInMenu />

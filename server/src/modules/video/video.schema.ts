@@ -8,6 +8,7 @@ export const GetVideosSchema = z.object({
     page: z.number({ coerce: true }).default(1),
     perPage: z.number({ coerce: true }).default(10),
     category: z.string().optional(),
+    search: z.string().optional(),
   }),
 })
 
