@@ -207,6 +207,7 @@ const WatchPage = () => {
             isFetchingNextPage={isFetchingCommentsNextPage}
             items={comments}
             renderItem={comment => <CommentItem comment={comment} />}
+            spacing='xl'
           />
         </Stack>
         <InfiniteScroll

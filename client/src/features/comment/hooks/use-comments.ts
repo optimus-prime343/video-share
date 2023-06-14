@@ -9,8 +9,8 @@ export const GetCommentsResponseSchema = z.object({
   message: z.string(),
   data: z.object({
     comments: z.array(CommentSchema),
-    nextPage: z.string().nullable(),
-    prevPage: z.string().nullable(),
+    nextPage: z.number().nullable(),
+    prevPage: z.number().nullable(),
     totalPages: z.number(),
   }),
 })
