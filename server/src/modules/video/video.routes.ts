@@ -24,6 +24,7 @@ import {
   GetVideosSchema,
   LikeDislikeVideoSchema,
   UpdateViewCountSchema,
+  VideoLikedDislikedStatusQuerySchema,
 } from './video.schema.js'
 
 const videoRouter = Router()
@@ -54,7 +55,12 @@ videoRouter.post(
   validateResource(LikeDislikeVideoSchema),
   dislikeVideo,
 )
-videoRouter.get('/liked-disliked-status', authRequired, getVideoLikedDislikedStatus)
+videoRouter.get(
+  '/liked-disliked-status',
+  authRequired,
+  validateResource(VideoLikedDislikedStatusQuerySchema),
+  getVideoLikedDislikedStatus,
+)
 videoRouter.get('/', validateResource(GetVideosSchema), getVideos)
 videoRouter.get('/:videoId', validateResource(GetVideoDetailsSchema), getVideoDetails)
 videoRouter.post(
