@@ -17,6 +17,7 @@ import type {
   GetVideosQuery,
   LikeDislikeVideoQuery,
   UpdateViewCountQuery,
+  VideoLikedDislikedStatusQuery,
   WatchVideoParams,
 } from './video.schema.js'
 
@@ -310,23 +311,6 @@ export const likeVideo = expressAsyncHandler(async (req, res, _next) => {
   })
 })
 
-export const videoLikedStatus = expressAsyncHandler(async (req, res, _next) => {
-  const user = res.locals.user as User
-  const { videoId } = req.query as LikeDislikeVideoQuery
-  const hasAlreadyLiked = await db.likedVideo.findFirst({
-    where: {
-      userId: user.id,
-      videoId,
-    },
-  })
-  sendSuccessResponse({
-    res,
-    message: 'Video liked status fetched successfully.',
-    data: {
-      isLiked: !!hasAlreadyLiked,
-    },
-  })
-})
 
 export const dislikeVideo = expressAsyncHandler(async (req, res, _next) => {
   const user = res.locals.user as User
@@ -409,19 +393,27 @@ export const dislikeVideo = expressAsyncHandler(async (req, res, _next) => {
   })
 })
 
-export const videoDislikedStatus = expressAsyncHandler(async (req, res, _next) => {
+
+export const getVideoLikedDislikedStatus = expressAsyncHandler(async (req, res, _next) => {
+  const { videoId } = req.query as VideoLikedDislikedStatusQuery
   const user = res.locals.user as User
-  const { videoId } = req.query as LikeDislikeVideoQuery
-  const hasAlreadyDisliked = await db.dislikedVideo.findFirst({
+  const likedVideo = await db.likedVideo.findFirst({
     where: {
-      userId: user.id,
       videoId,
+      userId: user.id,
+    },
+  })
+  const dislikedVideo = await db.dislikedVideo.findFirst({
+    where: {
+      videoId,
+      userId: user.id,
     },
   })
   sendSuccessResponse({
     res,
     data: {
-      isDisliked: !!hasAlreadyDisliked,
+      isLiked: !!likedVideo,
+      isDisliked: !!dislikedVideo,
     },
   })
 })

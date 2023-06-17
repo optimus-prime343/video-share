@@ -56,6 +56,12 @@ export const LikeDislikeVideoSchema = z.object({
   }),
 })
 
+export const VideoLikedDislikedStatusQuerySchema = z.object({
+  query: z.object({
+    videoId: z.string().uuid(),
+  }),
+})
+
 export type GetVideosQuery = z.infer<typeof GetVideosSchema>['query']
 export type GetVideoDetailsParams = z.infer<typeof GetVideoDetailsSchema>['params']
 export type GetSuggestedVideosQuery = z.infer<typeof GetSuggestedVideosSchema>['query']
@@ -63,3 +69,6 @@ export type CreateVideoRequest = z.infer<typeof CreateVideoSchema>
 export type WatchVideoParams = z.infer<typeof WatchVideSchema>['params']
 export type UpdateViewCountQuery = z.infer<typeof UpdateViewCountSchema>['query']
 export type LikeDislikeVideoQuery = z.infer<typeof LikeDislikeVideoSchema>['query']
+export type VideoLikedDislikedStatusQuery = z.infer<
+  typeof VideoLikedDislikedStatusQuerySchema
+>['query']

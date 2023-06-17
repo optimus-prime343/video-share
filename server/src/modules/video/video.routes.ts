@@ -11,11 +11,10 @@ import {
   getSuggestedVideos,
   getVideoCategories,
   getVideoDetails,
+  getVideoLikedDislikedStatus,
   getVideos,
   likeVideo,
   updateViewCount,
-  videoDislikedStatus,
-  videoLikedStatus,
   watch,
 } from './video.controller.js'
 import {
@@ -49,24 +48,13 @@ videoRouter.post(
   validateResource(LikeDislikeVideoSchema),
   likeVideo,
 )
-videoRouter.get(
-  '/is-video-liked',
-  authRequired,
-  validateResource(LikeDislikeVideoSchema),
-  videoLikedStatus,
-)
 videoRouter.post(
   '/dislike-video',
   authRequired,
   validateResource(LikeDislikeVideoSchema),
   dislikeVideo,
 )
-videoRouter.get(
-  '/is-video-disliked',
-  authRequired,
-  validateResource(LikeDislikeVideoSchema),
-  videoDislikedStatus,
-)
+videoRouter.get('/liked-disliked-status', authRequired, getVideoLikedDislikedStatus)
 videoRouter.get('/', validateResource(GetVideosSchema), getVideos)
 videoRouter.get('/:videoId', validateResource(GetVideoDetailsSchema), getVideoDetails)
 videoRouter.post(

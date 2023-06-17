@@ -34,12 +34,11 @@ import { CommentItem } from '@/features/comment/components/comment-item'
 import { useComments } from '@/features/comment/hooks/use-comments'
 import { SuggestedVideoItem } from '@/features/video/components/suggested-video-item'
 import { useDislikeVideo } from '@/features/video/hooks/use-dislike-video'
-import { useIsVideoDisliked } from '@/features/video/hooks/use-is-video-disliked'
-import { useIsVideoLiked } from '@/features/video/hooks/use-is-video-liked'
 import { useLikeVideo } from '@/features/video/hooks/use-like-video'
 import { useSuggestedVideos } from '@/features/video/hooks/use-suggested-videos'
 import { useUpdateViewCount } from '@/features/video/hooks/use-update-view-count'
 import { useVideoDetail } from '@/features/video/hooks/use-video-detail'
+import { useVideoLikedDislikedStatus } from '@/features/video/hooks/use-video-liked-disliked-status'
 
 const WatchPage = () => {
   const queryClient = useQueryClient()
@@ -62,8 +61,7 @@ const WatchPage = () => {
     fetchNextPage: fetchNextCommentsPage,
   } = useComments(videoId)
 
-  const { data: isVideoLiked } = useIsVideoLiked(videoId)
-  const { data: isVideoDisliked } = useIsVideoDisliked(videoId)
+  const { data: videoLikedDislikedStatus } = useVideoLikedDislikedStatus(videoId)
 
   const updateViewCount = useUpdateViewCount()
   const likeVideo = useLikeVideo()
@@ -84,8 +82,7 @@ const WatchPage = () => {
     likeVideo.mutate(videoId, {
       onSuccess: async () => {
         await Promise.all([
-          queryClient.invalidateQueries(['is-video-disliked', videoId]),
-          queryClient.invalidateQueries(['is-video-liked', videoId]),
+          queryClient.invalidateQueries(['video-liked-disliked-status', videoId]),
           queryClient.invalidateQueries(['video', videoId]),
         ])
       },
@@ -97,8 +94,7 @@ const WatchPage = () => {
     dislikeVideo.mutate(videoId, {
       onSuccess: async () => {
         await Promise.all([
-          queryClient.invalidateQueries(['is-video-disliked', videoId]),
-          queryClient.invalidateQueries(['is-video-liked', videoId]),
+          queryClient.invalidateQueries(['video-liked-disliked-status', videoId]),
           queryClient.invalidateQueries(['video', videoId]),
         ])
       },
@@ -164,14 +160,22 @@ const WatchPage = () => {
             <Group>
               <Button.Group>
                 <Button
-                  leftIcon={isVideoLiked ? <IconThumbUpFilled /> : <IconThumbUp />}
+                  leftIcon={
+                    videoLikedDislikedStatus?.isLiked ? <IconThumbUpFilled /> : <IconThumbUp />
+                  }
                   onClick={handleLikeVideo}
                   variant='light'
                 >
                   {formatCount(videoDetail.likes)}
                 </Button>
                 <Button
-                  leftIcon={isVideoDisliked ? <IconThumbDownFilled /> : <IconThumbDown />}
+                  leftIcon={
+                    videoLikedDislikedStatus?.isDisliked ? (
+                      <IconThumbDownFilled />
+                    ) : (
+                      <IconThumbDown />
+                    )
+                  }
                   onClick={handleDislikeVideo}
                   variant='light'
                 >
