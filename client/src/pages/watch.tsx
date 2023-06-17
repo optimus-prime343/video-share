@@ -28,6 +28,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { InfiniteScroll } from '@/core/components/infinite-scroll'
 import Player from '@/core/components/player/player'
 import { formatCount } from '@/core/utils/count'
+import { pluralize } from '@/core/utils/pluralize'
 import CommentForm from '@/features/comment/components/comment-form/comment-form'
 import { CommentItem } from '@/features/comment/components/comment-item'
 import { useComments } from '@/features/comment/hooks/use-comments'
@@ -191,7 +192,8 @@ const WatchPage = () => {
           </Group>
           <Paper className={classes.videoDescription}>
             <Text fw='bold'>
-              {formatCount(videoDetail.views)} Views • {dayjs(videoDetail.createdAt).fromNow()}{' '}
+              {formatCount(videoDetail.views)} {pluralize('View', videoDetail.views)} •{' '}
+              {dayjs(videoDetail.createdAt).fromNow()}{' '}
             </Text>
             {videoDetail.description ? (
               <Spoiler hideLabel='Show less' maxHeight={80} showLabel='Show more'>
@@ -201,7 +203,8 @@ const WatchPage = () => {
           </Paper>
           {videoId ? <CommentForm videoId={videoId} /> : null}
           <Title order={4}>
-            {formatCount(commentsPages?.pages.at(0)?.count ?? 0)} Comments
+            {formatCount(commentsPages?.pages.at(0)?.count ?? 0)}{' '}
+            {pluralize('Comment', commentsPages?.pages.at(0)?.count ?? 0)}
           </Title>
           <InfiniteScroll
             as={Stack}

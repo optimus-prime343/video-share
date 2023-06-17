@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { forwardRef } from 'react'
 
+import { pluralize } from '@/core/utils/pluralize'
 import { Video } from '@/features/video/schemas/video'
 
 export interface SuggestedVideoItemProps {
@@ -35,7 +36,7 @@ const SuggestedVideoItem = forwardRef<HTMLAnchorElement, SuggestedVideoItemProps
             {video.channel.name}
           </Text>
           <Text className={classes.truncate} size='xs'>
-            {video.views} views • {dayjs(video.createdAt).fromNow()}
+            {video.views} {pluralize('View', video.views)} • {dayjs(video.createdAt).fromNow()}
           </Text>
         </div>
       </Link>
