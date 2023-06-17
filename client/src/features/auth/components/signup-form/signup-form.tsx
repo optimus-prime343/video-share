@@ -1,4 +1,4 @@
-import { Button, TextInput } from '@mantine/core'
+import { Button, PasswordInput, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 
 import { SignupFormData, SignupSchema } from '@/features/auth/schemas/signup'
@@ -10,7 +10,7 @@ export interface SignupFormProps {
 export const SignupForm = ({ onSubmit, isSubmitting }: SignupFormProps) => {
   const form = useForm<SignupFormData>({
     initialValues: {
-      useranme: '',
+      username: '',
       email: '',
       password: '',
     },
@@ -19,27 +19,29 @@ export const SignupForm = ({ onSubmit, isSubmitting }: SignupFormProps) => {
 
   return (
     <form onSubmit={form.onSubmit(onSubmit)}>
-      <TextInput
-        label='Username'
-        placeholder='Enter your username'
-        withAsterisk
-        {...form.getInputProps('useranme')}
-      />
-      <TextInput
-        label='Email Address'
-        placeholder='Enter your email'
-        withAsterisk
-        {...form.getInputProps('email')}
-      />
-      <TextInput
-        label='Password'
-        placeholder='Enter your password'
-        withAsterisk
-        {...form.getInputProps('password')}
-      />
-      <Button disabled={!form.isValid()} loading={isSubmitting} type='submit'>
-        Sign up
-      </Button>
+      <Stack>
+        <TextInput
+          label='Username'
+          placeholder='Enter your username'
+          withAsterisk
+          {...form.getInputProps('username')}
+        />
+        <TextInput
+          label='Email Address'
+          placeholder='Enter your email'
+          withAsterisk
+          {...form.getInputProps('email')}
+        />
+        <PasswordInput
+          label='Password'
+          placeholder='Enter your password'
+          withAsterisk
+          {...form.getInputProps('password')}
+        />
+        <Button disabled={!form.isValid()} loading={isSubmitting} type='submit'>
+          Sign up
+        </Button>
+      </Stack>
     </form>
   )
 }

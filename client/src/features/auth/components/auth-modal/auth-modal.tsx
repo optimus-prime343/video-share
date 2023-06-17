@@ -79,7 +79,7 @@ export const AuthModal = ({ onAuthSuccess }: AuthModalProps) => {
         <LoginForm isSubmitting={login.isLoading} onSubmit={onLoginFormSubmit} />
       </Tabs.Panel>
       <Tabs.Panel mt='md' value={SIGN_UP_TAB_VALUE}>
-        <SignupForm onSubmit={onSignUpFormSubmit} />
+        <SignupForm isSubmitting={signUp.isLoading} onSubmit={onSignUpFormSubmit} />
       </Tabs.Panel>
     </Tabs>
   )

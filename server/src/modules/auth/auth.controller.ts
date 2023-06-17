@@ -24,7 +24,7 @@ import type {
 } from './auth.schema.js'
 
 const createAccount = expressAsyncHandler(async (req, res, next) => {
-  const { email, password } = req.body as CreateAccountPayload
+  const { email, password, username } = req.body as CreateAccountPayload
   const user = await db.user.findUnique({ where: { email } })
   if (user)
     return next(createHttpError(StatusCodes.BAD_REQUEST, 'Email address already exists'))
@@ -32,7 +32,7 @@ const createAccount = expressAsyncHandler(async (req, res, next) => {
   const verificationTokenExpiresAt = new Date(Date.now() + VERIFICATION_TOKEN_EXPIRES_IN_MS)
   const hashedPassword = await argon2.hash(password)
   const newUser = await db.user.create({
-    data: { email, password: hashedPassword },
+    data: { email, password: hashedPassword, username },
   })
   await db.verificationToken.create({
     data: {
@@ -233,4 +233,13 @@ const refreshToken = expressAsyncHandler(async (req, res, next) => {
   })
 })
 
-export { createAccount, login, profile, refreshToken, verifyAccount }
+const logout = expressAsyncHandler((_req, res, _next) => {
+  res.clearCookie(ACCESS_TOKEN_NAME)
+  res.clearCookie(REFRESH_TOKEN_NAME)
+  sendSuccessResponse({
+    res,
+    message: 'You have been logged out successfully.',
+  })
+})
+
+export { createAccount, login, logout, profile, refreshToken, verifyAccount }

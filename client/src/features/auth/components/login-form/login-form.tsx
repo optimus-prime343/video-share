@@ -10,7 +10,7 @@ export interface LoginFormProps {
 }
 
 export function LoginForm({ onSubmit: onSubmitProp, isSubmitting }: LoginFormProps) {
-  const { getInputProps, onSubmit } = useForm<LoginFormData>({
+  const form = useForm<LoginFormData>({
     initialValues: {
       email: '',
       password: '',
@@ -21,21 +21,21 @@ export function LoginForm({ onSubmit: onSubmitProp, isSubmitting }: LoginFormPro
   const handleSubmit = useCallback(onSubmitProp, [onSubmitProp])
 
   return (
-    <form onSubmit={onSubmit(handleSubmit)}>
+    <form onSubmit={form.onSubmit(handleSubmit)}>
       <Stack>
         <TextInput
           label='Email address'
           placeholder='Enter your email address'
           withAsterisk
-          {...getInputProps('email')}
+          {...form.getInputProps('email')}
         />
         <PasswordInput
           label='Password'
           placeholder='Enter your password'
           withAsterisk
-          {...getInputProps('password')}
+          {...form.getInputProps('password')}
         />
-        <Button loading={isSubmitting} type='submit'>
+        <Button disabled={!form.isValid()} loading={isSubmitting} type='submit'>
           Login
         </Button>
       </Stack>

@@ -1,9 +1,11 @@
 import { Router } from 'express'
 
+import { authRequired } from '../../core/middlewares/auth-required.js'
 import { validateResource } from '../../core/middlewares/validate-resource.js'
 import {
   createAccount,
   login,
+  logout,
   profile,
   refreshToken,
   verifyAccount,
@@ -21,5 +23,7 @@ authRouter.get(
 )
 authRouter.get('/refresh-token', refreshToken)
 authRouter.get('/profile', profile)
+
+authRouter.get('/logout', authRequired, logout)
 
 export { authRouter }

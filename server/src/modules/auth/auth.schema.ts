@@ -9,6 +9,7 @@ export const CreateAccountSchema = z.object({
     password: z.string().refine(value => !PASSWORD_REGEX.test(value), {
       message: STRONG_PASSWORD_REQUIRED,
     }),
+    username: z.string().min(3).max(20),
   }),
 })
 export const VerifyAccountSchema = z.object({
