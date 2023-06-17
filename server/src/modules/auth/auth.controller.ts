@@ -157,6 +157,7 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
             },
             select: {
               id: true,
+              username: true,
               email: true,
               status: true,
               createdAt: true,
@@ -178,9 +179,6 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
               res,
               message: error.message,
               stack: error.stack,
-              meta: {
-                code: 'ACCESS_TOKEN_EXPIRED',
-              },
             })
           }
         })

@@ -23,6 +23,17 @@ export const getCommentsByVideo = expressAsyncHandler(async (req, res, _next) =>
     where: {
       videoId,
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+    },
     skip,
     take: perPage,
   })
@@ -34,6 +45,7 @@ export const getCommentsByVideo = expressAsyncHandler(async (req, res, _next) =>
       nextPage,
       prevPage,
       totalPages,
+      count,
     },
   })
 })
@@ -47,6 +59,14 @@ export const createComment = expressAsyncHandler(async (req, res, _next) => {
       text,
       userId: user.id,
       videoId: videoId,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
     },
   })
   sendSuccessResponse({

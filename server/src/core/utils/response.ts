@@ -6,14 +6,12 @@ export interface SuccessResponseParams<T> {
   statusCodes?: StatusCodes
   message?: string
   data?: Awaited<T>
-  meta?: Record<string, unknown>
 }
 export interface ErrorResponseParams {
   res: Response
   statusCodes?: StatusCodes
   message?: string
   stack?: string
-  meta?: Record<string, unknown>
 }
 
 export const sendSuccessResponse = <T>({

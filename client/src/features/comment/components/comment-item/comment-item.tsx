@@ -13,7 +13,7 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
       <Avatar radius='xl'></Avatar>
       <div>
         <Text color='dimmed' mb={4}>
-          {comment.userId} {DOT} {dayjs(comment.createdAt).fromNow()}
+          {comment.user.username} {DOT} {dayjs(comment.createdAt).fromNow()}
         </Text>
         <Text>{comment.text}</Text>
       </div>

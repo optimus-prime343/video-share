@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export const UserSchema = z.object({
   id: z.string(),
+  username: z.string().nonempty(),
   email: z.string().optional(),
   role: z.enum(['ADMIN', 'USER']),
   status: z.enum(['ACTIVE', 'INACTIVE']),

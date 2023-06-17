@@ -12,6 +12,7 @@ export const GetCommentsResponseSchema = z.object({
     nextPage: z.number().nullable(),
     prevPage: z.number().nullable(),
     totalPages: z.number(),
+    count: z.number(),
   }),
 })
 export type GetCommentsResponse = z.infer<typeof GetCommentsResponseSchema>['data']

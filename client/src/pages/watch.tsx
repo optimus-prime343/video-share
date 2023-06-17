@@ -200,6 +200,9 @@ const WatchPage = () => {
             ) : null}
           </Paper>
           {videoId ? <CommentForm videoId={videoId} /> : null}
+          <Title order={4}>
+            {formatCount(commentsPages?.pages.at(0)?.count ?? 0)} Comments
+          </Title>
           <InfiniteScroll
             as={Stack}
             fetchNextPage={fetchNextCommentsPage}

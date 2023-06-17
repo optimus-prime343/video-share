@@ -1,10 +1,13 @@
 import { z } from 'zod'
 
+import { UserSchema } from '@/features/auth/schemas/user'
+
 export const CommentSchema = z.object({
   id: z.string().uuid(),
   text: z.string().nonempty(),
   userId: z.string().uuid(),
   videoId: z.string().uuid(),
+  user: UserSchema.pick({ id: true, username: true }),
   createdAt: z.date({ coerce: true }),
   updatedAt: z.date({ coerce: true }),
 })
