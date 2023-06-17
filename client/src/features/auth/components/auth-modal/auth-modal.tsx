@@ -4,11 +4,13 @@ import { IconUser } from '@tabler/icons-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
 
-import { AuthForm } from '@/features/auth/components/login-form'
+import { LoginForm } from '@/features/auth/components/login-form'
+import { SignupForm } from '@/features/auth/components/signup-form'
 import { useLogin } from '@/features/auth/hooks/use-login'
 import { useSignup } from '@/features/auth/hooks/use-signup'
 import { USER_QUERY_KEY } from '@/features/auth/hooks/use-user'
-import { AuthData } from '@/features/auth/schemas/login'
+import { LoginFormData } from '@/features/auth/schemas/login'
+import { SignupFormData } from '@/features/auth/schemas/signup'
 
 const LOGIN_TAB_VALUE = 'login'
 const SIGN_UP_TAB_VALUE = 'sign-up'
@@ -25,7 +27,7 @@ export const AuthModal = ({ onAuthSuccess }: AuthModalProps) => {
   const signUp = useSignup()
 
   const onLoginFormSubmit = useCallback(
-    (data: AuthData) => {
+    (data: LoginFormData) => {
       login.mutate(data, {
         onSuccess: async ({ message }) => {
           await queryClient.invalidateQueries(USER_QUERY_KEY)
@@ -43,7 +45,7 @@ export const AuthModal = ({ onAuthSuccess }: AuthModalProps) => {
     [login, onAuthSuccess, queryClient]
   )
   const onSignUpFormSubmit = useCallback(
-    (data: AuthData) => {
+    (data: SignupFormData) => {
       signUp.mutate(data, {
         onSuccess: ({ message }) => {
           showNotification({
@@ -74,14 +76,10 @@ export const AuthModal = ({ onAuthSuccess }: AuthModalProps) => {
         <Tabs.Tab value={SIGN_UP_TAB_VALUE}>Sign Up</Tabs.Tab>
       </Tabs.List>
       <Tabs.Panel mt='md' value={LOGIN_TAB_VALUE}>
-        <AuthForm isSubmitting={login.isLoading} mode='login' onSubmit={onLoginFormSubmit} />
+        <LoginForm isSubmitting={login.isLoading} onSubmit={onLoginFormSubmit} />
       </Tabs.Panel>
       <Tabs.Panel mt='md' value={SIGN_UP_TAB_VALUE}>
-        <AuthForm
-          isSubmitting={signUp.isLoading}
-          mode='sign-up'
-          onSubmit={onSignUpFormSubmit}
-        />
+        <SignupForm onSubmit={onSignUpFormSubmit} />
       </Tabs.Panel>
     </Tabs>
   )

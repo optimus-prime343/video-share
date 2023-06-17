@@ -2,21 +2,20 @@ import { Button, PasswordInput, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useCallback } from 'react'
 
-import { AuthData, AuthSchema } from '@/features/auth/schemas/login'
+import { LoginFormData, LoginSchema } from '@/features/auth/schemas/login'
 
-export interface AuthFormProps {
-  mode: 'login' | 'sign-up'
-  onSubmit: (data: AuthData) => void
+export interface LoginFormProps {
+  onSubmit: (data: LoginFormData) => void
   isSubmitting?: boolean
 }
 
-export function AuthForm({ onSubmit: onSubmitProp, isSubmitting, mode }: AuthFormProps) {
-  const { getInputProps, onSubmit } = useForm<AuthData>({
+export function LoginForm({ onSubmit: onSubmitProp, isSubmitting }: LoginFormProps) {
+  const { getInputProps, onSubmit } = useForm<LoginFormData>({
     initialValues: {
       email: '',
       password: '',
     },
-    validate: zodResolver(AuthSchema),
+    validate: zodResolver(LoginSchema),
   })
 
   const handleSubmit = useCallback(onSubmitProp, [onSubmitProp])
@@ -37,7 +36,7 @@ export function AuthForm({ onSubmit: onSubmitProp, isSubmitting, mode }: AuthFor
           {...getInputProps('password')}
         />
         <Button loading={isSubmitting} type='submit'>
-          {mode === 'login' ? 'Log In' : 'Sign Up'}
+          Login
         </Button>
       </Stack>
     </form>
