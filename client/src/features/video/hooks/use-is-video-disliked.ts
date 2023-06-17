@@ -13,7 +13,7 @@ export const IsVideoDislikedResponseSchema = z.object({
 export const useIsVideoDisliked = (videoId: string | undefined) => {
   const { data: user } = useUser()
   return useQuery<boolean, Error>({
-    queryKey: ['is-video-disliked', videoId],
+    queryKey: ['is-video-disliked', videoId, user?.id],
     queryFn: () =>
       api
         .GET(IsVideoDislikedResponseSchema, '/video/is-video-disliked', {
