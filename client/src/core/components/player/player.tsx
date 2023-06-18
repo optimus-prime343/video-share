@@ -1,13 +1,15 @@
-import { DefaultUi, Player as VimePlayer, Video } from '@vime/react'
+import {
+  DefaultUi,
+  Player as VimePlayer,
+  PlayerProps as VimePlayerProps,
+  Video,
+} from '@vime/react'
 import assert from 'assert'
 import { forwardRef, ReactNode, useMemo } from 'react'
 
-export interface PlayerProps {
+export interface PlayerProps extends Partial<VimePlayerProps> {
   videoId: string
   poster?: string
-  autoPlay?: boolean
-  controls?: boolean
-  muted?: boolean
   children?: ReactNode
 }
 const Player = forwardRef<HTMLVmPlayerElement, PlayerProps>((props, ref) => {
@@ -17,6 +19,7 @@ const Player = forwardRef<HTMLVmPlayerElement, PlayerProps>((props, ref) => {
   const src = useMemo(() => `${apiUrl}/video/watch/${videoId}`, [apiUrl, videoId])
 
   return (
+    // @ts-expect-error Types of property '"audioTracks"' are incompatible. Only a typescript master can solve this error
     <VimePlayer ref={ref} {...rest}>
       <Video crossOrigin='' poster={poster}>
         <source data-src={src} type='video/mp4' />

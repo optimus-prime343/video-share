@@ -23,7 +23,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import parse from 'html-react-parser'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { InfiniteScroll } from '@/core/components/infinite-scroll'
 import Player from '@/core/components/player/player'
@@ -46,6 +46,7 @@ const WatchPage = () => {
   const { classes } = useStyles()
   const videoId = router.query?.id as string | undefined
 
+  const playerRef = useRef<HTMLVmPlayerElement | null>(null)
   const { data: videoDetail } = useVideoDetail(videoId)
   const {
     data: suggestedVideosPages,
@@ -76,6 +77,13 @@ const WatchPage = () => {
     () => commentsPages?.pages?.flatMap(page => page.comments) ?? [],
     [commentsPages?.pages]
   )
+
+  const sharedTimeStamp = useMemo<number>(() => {
+    const timeString = router.query?.time as string | undefined
+    if (!timeString) return 0
+    if (isNaN(+timeString)) return 0
+    return +timeString
+  }, [router.query?.time])
 
   const handleLikeVideo = useCallback(() => {
     if (!videoId) return
@@ -117,11 +125,18 @@ const WatchPage = () => {
 
   const handleShareVideo = useCallback(() => {
     if (!videoDetail) return
+    if (!playerRef.current) return
+
+    const currentTime = playerRef.current.currentTime
+    const url = new URL(window.location.href)
+    url.searchParams.set('id', videoDetail.id)
+    if (currentTime > 0) url.searchParams.set('time', currentTime.toFixed(0))
     const shareData: ShareData = {
       title: videoDetail.title,
       text: videoDetail.description,
-      url: window.location.href,
+      url: url.toString(),
     }
+
     if (!navigator.canShare(shareData)) return alert('Your browser does not support sharing')
     navigator.share(shareData).catch(error => console.error('Error sharing', error))
   }, [videoDetail])
@@ -142,7 +157,12 @@ const WatchPage = () => {
     <div className={classes.container}>
       <div className={classes.videoContainer}>
         <Stack>
-          <Player autoPlay poster={videoDetail.thumbnail} videoId={videoId} />
+          <Player
+            currentTime={sharedTimeStamp}
+            poster={videoDetail.thumbnail}
+            ref={playerRef}
+            videoId={videoId}
+          />
           <Group position='apart'>
             <Title order={3}>{videoDetail.title}</Title>
           </Group>
