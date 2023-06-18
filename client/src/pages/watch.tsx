@@ -26,7 +26,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { InfiniteScroll } from '@/core/components/infinite-scroll'
-import Player from '@/core/components/player/player'
+import { Player } from '@/core/components/player'
 import { formatCount } from '@/core/utils/count'
 import { pluralize } from '@/core/utils/pluralize'
 import CommentForm from '@/features/comment/components/comment-form/comment-form'
@@ -47,6 +47,7 @@ const WatchPage = () => {
   const videoId = router.query?.id as string | undefined
 
   const playerRef = useRef<HTMLVmPlayerElement | null>(null)
+
   const { data: videoDetail } = useVideoDetail(videoId)
   const {
     data: suggestedVideosPages,
@@ -78,10 +79,10 @@ const WatchPage = () => {
     [commentsPages?.pages]
   )
 
-  const sharedTimeStamp = useMemo<number>(() => {
+  const sharedTimeStamp = useMemo<number | undefined>(() => {
     const timeString = router.query?.time as string | undefined
-    if (!timeString) return 0
-    if (isNaN(+timeString)) return 0
+    if (!timeString) return undefined
+    if (isNaN(+timeString)) return undefined
     return +timeString
   }, [router.query?.time])
 

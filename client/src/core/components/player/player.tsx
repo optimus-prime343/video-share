@@ -5,14 +5,14 @@ import {
   Video,
 } from '@vime/react'
 import assert from 'assert'
-import { forwardRef, ReactNode, useMemo } from 'react'
+import { forwardRef, memo, ReactNode, useMemo } from 'react'
 
 export interface PlayerProps extends Partial<VimePlayerProps> {
   videoId: string
   poster?: string
   children?: ReactNode
 }
-const Player = forwardRef<HTMLVmPlayerElement, PlayerProps>((props, ref) => {
+const Player_ = forwardRef<HTMLVmPlayerElement, PlayerProps>((props, ref) => {
   const { videoId, poster, children, ...rest } = props
   const apiUrl = process.env.NEXT_PUBLIC_API_REQUEST_URL
   assert(apiUrl, 'NEXT_PUBLIC_API_REQUEST_URL is not defined')
@@ -29,6 +29,6 @@ const Player = forwardRef<HTMLVmPlayerElement, PlayerProps>((props, ref) => {
     </VimePlayer>
   )
 })
-Player.displayName = 'Player'
+Player_.displayName = 'Player'
 
-export default Player
+export const Player =  memo(Player_)
