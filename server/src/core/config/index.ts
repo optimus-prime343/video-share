@@ -7,6 +7,7 @@ dotenv.config()
 
 const configSchema = z.object({
   PORT: z.string().default('3000'),
+  FRONTEND_URL: z.string().default('http://localhost:3000'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   MAIL_FROM: z.string(),
   MAIL_HOST: z.string(),
