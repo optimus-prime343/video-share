@@ -31,4 +31,4 @@ const Player_ = forwardRef<HTMLVmPlayerElement, PlayerProps>((props, ref) => {
 })
 Player_.displayName = 'Player'
 
-export const Player =  memo(Player_)
+export const Player = memo(Player_)

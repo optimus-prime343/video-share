@@ -29,7 +29,7 @@ import { InfiniteScroll } from '@/core/components/infinite-scroll'
 import { Player } from '@/core/components/player'
 import { formatCount } from '@/core/utils/count'
 import { pluralize } from '@/core/utils/pluralize'
-import CommentForm from '@/features/comment/components/comment-form/comment-form'
+import { CommentForm } from '@/features/comment/components/comment-form/comment-form'
 import { CommentItem } from '@/features/comment/components/comment-item'
 import { useComments } from '@/features/comment/hooks/use-comments'
 import { SuggestedVideoItem } from '@/features/video/components/suggested-video-item'
@@ -44,9 +44,9 @@ const WatchPage = () => {
   const queryClient = useQueryClient()
   const router = useRouter()
   const { classes } = useStyles()
-  const videoId = router.query?.id as string | undefined
 
   const playerRef = useRef<HTMLVmPlayerElement | null>(null)
+  const videoId = useMemo(() => router.query?.id as string | undefined, [router.query?.id])
 
   const { data: videoDetail } = useVideoDetail(videoId)
   const {
@@ -79,10 +79,10 @@ const WatchPage = () => {
     [commentsPages?.pages]
   )
 
-  const sharedTimeStamp = useMemo<number | undefined>(() => {
+  const sharedTimeStamp = useMemo<number>(() => {
     const timeString = router.query?.time as string | undefined
-    if (!timeString) return undefined
-    if (isNaN(+timeString)) return undefined
+    if (!timeString) return 0
+    if (isNaN(+timeString)) return 0
     return +timeString
   }, [router.query?.time])
 

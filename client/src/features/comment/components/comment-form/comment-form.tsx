@@ -2,7 +2,7 @@ import { Button, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { IconMessage } from '@tabler/icons-react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useCallback } from 'react'
+import { memo, useCallback } from 'react'
 
 import { useCreateComment } from '@/features/comment/hooks/use-create-comment'
 import {
@@ -13,7 +13,7 @@ import {
 interface CommentFormProps {
   videoId: string
 }
-const CommentForm = ({ videoId }: CommentFormProps) => {
+const CommentForm_ = ({ videoId }: CommentFormProps) => {
   const queryClient = useQueryClient()
   const createComment = useCreateComment()
   const form = useForm<CreateCommentFormData>({
@@ -52,4 +52,4 @@ const CommentForm = ({ videoId }: CommentFormProps) => {
     </form>
   )
 }
-export default CommentForm
+export const CommentForm = memo(CommentForm_)

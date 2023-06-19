@@ -12,11 +12,17 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
   cors: {
-    origin: [process.env.FRONTEND_URL],
+    origin: [process.env.FRONTEND_URL ?? 'http://localhost:3000'],
+    credentials: true,
   },
 })
 
-io.on('connection', console.log)
+io.on('connection', socket => {
+  console.log('a user connected', socket.id)
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
+  })
+})
 
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)

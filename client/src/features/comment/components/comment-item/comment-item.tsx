@@ -1,5 +1,6 @@
 import { Avatar, createStyles, Group, Text } from '@mantine/core'
 import dayjs from 'dayjs'
+import { memo } from 'react'
 
 import { DOT } from '@/core/constants/strings'
 import { Comment } from '@/features/comment/schemas/comment'
@@ -7,7 +8,7 @@ import { Comment } from '@/features/comment/schemas/comment'
 export interface CommentItemProps {
   comment: Comment
 }
-export const CommentItem = ({ comment }: CommentItemProps) => {
+const CommentItem_ = ({ comment }: CommentItemProps) => {
   const { classes } = useStyles()
   return (
     <Group align='flex-start'>
@@ -31,3 +32,5 @@ const useStyles = createStyles(theme => ({
     borderRadius: theme.radius.md,
   },
 }))
+
+export const CommentItem = memo(CommentItem_)

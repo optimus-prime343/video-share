@@ -2,7 +2,7 @@ import { createStyles, Text, Title } from '@mantine/core'
 import dayjs from 'dayjs'
 import Image from 'next/image'
 import Link from 'next/link'
-import { forwardRef } from 'react'
+import { forwardRef, memo } from 'react'
 
 import { pluralize } from '@/core/utils/pluralize'
 import { Video } from '@/features/video/schemas/video'
@@ -10,7 +10,7 @@ import { Video } from '@/features/video/schemas/video'
 export interface SuggestedVideoItemProps {
   video: Video
 }
-const SuggestedVideoItem = forwardRef<HTMLAnchorElement, SuggestedVideoItemProps>(
+const SuggestedVideoItem_ = forwardRef<HTMLAnchorElement, SuggestedVideoItemProps>(
   (props, ref) => {
     const { video } = props
     const { classes } = useStyles()
@@ -44,7 +44,7 @@ const SuggestedVideoItem = forwardRef<HTMLAnchorElement, SuggestedVideoItemProps
   }
 )
 
-SuggestedVideoItem.displayName = 'SuggestedVideoItem'
+SuggestedVideoItem_.displayName = 'SuggestedVideoItem'
 
 const useStyles = createStyles(theme => ({
   suggestedVideoItem: {
@@ -60,4 +60,4 @@ const useStyles = createStyles(theme => ({
     width: '150px',
   },
 }))
-export { SuggestedVideoItem }
+export const SuggestedVideoItem = memo(SuggestedVideoItem_)
