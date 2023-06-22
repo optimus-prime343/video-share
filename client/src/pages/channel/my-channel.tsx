@@ -2,6 +2,7 @@ import { Box } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { useCallback } from 'react'
 
+import { withAuth } from '@/core/hoc/withAuth'
 import { ChannelForm } from '@/features/channel/components/channel-form'
 import { useCreateChannel } from '@/features/channel/hooks/use-create-channel'
 import { useUserChannel } from '@/features/channel/hooks/use-user-channel'
@@ -48,4 +49,4 @@ const MyChannelPage = () => {
     </Box>
   )
 }
-export default MyChannelPage
+export default withAuth(MyChannelPage)

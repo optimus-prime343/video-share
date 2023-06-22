@@ -3,6 +3,7 @@ import { showNotification } from '@mantine/notifications'
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
+import { withAuth } from '@/core/hoc/withAuth'
 import VideoForm from '@/features/video/components/video-form/video-form'
 import { useUploadVideo } from '@/features/video/hooks/use-upload-video'
 
@@ -39,4 +40,4 @@ const UploadVideoPage = () => {
     </Box>
   )
 }
-export default UploadVideoPage
+export default withAuth(UploadVideoPage)
