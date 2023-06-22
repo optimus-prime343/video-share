@@ -7,17 +7,16 @@ import {
   useMantineColorScheme,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { closeModal, openModal } from '@mantine/modals'
 import { IconMenu2, IconMoon, IconSun, IconUser } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { LoggedInMenu } from '@/core/components/layouts/navbar/logged-in-menu'
 import { SideBar } from '@/core/components/layouts/sidebar'
-import { AuthModal } from '@/features/auth/components/auth-modal'
 import { useUser } from '@/features/auth/hooks/use-user'
+import { useAuthModalOpen } from '@/features/auth/store/use-auth-modal-store'
 
 import { SearchVideosInput } from './search-videos-input'
 
@@ -27,15 +26,8 @@ export const Navbar = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const [opened, { open, close }] = useDisclosure()
 
+  const openAuthModal = useAuthModalOpen()
   const { data: user } = useUser()
-  const openAuthModal = useCallback(() => {
-    const authModalId = 'auth-modal'
-    openModal({
-      modalId: authModalId,
-      title: 'Get started',
-      children: <AuthModal onAuthSuccess={() => closeModal(authModalId)} />,
-    })
-  }, [])
 
   const LogoImage = useMemo(
     () => (

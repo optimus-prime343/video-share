@@ -18,6 +18,7 @@ import { useMemo, useState } from 'react'
 
 import { Navbar } from '@/core/components/layouts/navbar'
 import { COLOR_SCHEME_COOKIE } from '@/core/constants/strings'
+import { AuthModal } from '@/features/auth/components/auth-modal'
 
 dayjs.extend(RelativeTime)
 
@@ -74,6 +75,7 @@ export default function App({
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools position='bottom-right' />
           <ModalsProvider modalProps={{ centered: true }}>
+            <AuthModal />
             <Navbar />
             <Component {...pageProps} />
           </ModalsProvider>

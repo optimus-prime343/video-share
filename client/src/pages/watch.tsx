@@ -27,6 +27,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { InfiniteScroll } from '@/core/components/infinite-scroll'
 import { Player } from '@/core/components/player'
+import { useRequiresLogin } from '@/core/hooks/use-requires-login'
 import { formatCount } from '@/core/utils/count'
 import { pluralize } from '@/core/utils/pluralize'
 import { CommentForm } from '@/features/comment/components/comment-form/comment-form'
@@ -65,6 +66,7 @@ const WatchPage = () => {
 
   const { data: videoLikedDislikedStatus } = useVideoLikedDislikedStatus(videoId)
 
+  const requiresLogin = useRequiresLogin()
   const updateViewCount = useUpdateViewCount()
   const likeVideo = useLikeVideo()
   const dislikeVideo = useDislikeVideo()
@@ -184,7 +186,7 @@ const WatchPage = () => {
                   leftIcon={
                     videoLikedDislikedStatus?.isLiked ? <IconThumbUpFilled /> : <IconThumbUp />
                   }
-                  onClick={handleLikeVideo}
+                  onClick={requiresLogin(handleLikeVideo)}
                   variant='light'
                 >
                   {formatCount(videoDetail.likes)}
@@ -197,7 +199,7 @@ const WatchPage = () => {
                       <IconThumbDown />
                     )
                   }
-                  onClick={handleDislikeVideo}
+                  onClick={requiresLogin(handleDislikeVideo)}
                   variant='light'
                 >
                   {formatCount(videoDetail.dislikes)}
