@@ -2,6 +2,8 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import type { NextFunction, Request, Response } from 'express'
 import Express from 'express'
+import ratelimit from 'express-rate-limit'
+import helmet from 'helmet'
 import type { HttpError } from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import morgan from 'morgan'
@@ -20,6 +22,13 @@ app.use(Express.urlencoded({ extended: true }))
 app.use(Express.json())
 app.use(Express.static('public'))
 // third-party middlewares
+app.use(helmet())
+app.use(
+  ratelimit({
+    windowMs: 15 * 60 * 1000 /* 15 minutes */,
+    max: 100 /* limit each IP to 100 requests per windowMs */,
+  }),
+)
 app.use(cookieParser())
 app.use(morgan('dev'))
 // app routes
