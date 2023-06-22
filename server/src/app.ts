@@ -25,7 +25,7 @@ app.use(Express.static('public'))
 app.use(helmet())
 app.use(
   ratelimit({
-    windowMs: 15 * 60 * 1000 /* 15 minutes */,
+    windowMs: 60 * 1000 /* 1 minute */,
     max: 100 /* limit each IP to 100 requests per windowMs */,
   }),
 )
