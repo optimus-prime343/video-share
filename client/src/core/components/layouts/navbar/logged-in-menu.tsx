@@ -1,4 +1,4 @@
-import { Button, Menu } from '@mantine/core'
+import { Avatar, Menu } from '@mantine/core'
 import { openConfirmModal } from '@mantine/modals'
 import { IconCast, IconList, IconLogout, IconUpload, IconUser } from '@tabler/icons-react'
 import { useQueryClient } from '@tanstack/react-query'
@@ -6,12 +6,13 @@ import Link from 'next/link'
 import { useCallback } from 'react'
 
 import { useLogout } from '@/features/auth/hooks/use-logout'
-import { USER_QUERY_KEY } from '@/features/auth/hooks/use-user'
+import { USER_QUERY_KEY, useUser } from '@/features/auth/hooks/use-user'
 import { useUserChannel } from '@/features/channel/hooks/use-user-channel'
 
 export const LoggedInMenu = () => {
   const queryClient = useQueryClient()
   const { data: userChannel } = useUserChannel()
+  const { data: user } = useUser()
 
   const logout = useLogout()
 
@@ -36,10 +37,11 @@ export const LoggedInMenu = () => {
     })
   }, [logout, queryClient])
 
+  if (!user) return null
   return (
     <Menu position='bottom-end' width={200}>
       <Menu.Target>
-        <Button>Profile</Button>
+        <Avatar alt={`${user.username} profile`} radius='xl' src={user.image} />
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>Profile</Menu.Label>

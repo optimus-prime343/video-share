@@ -16,6 +16,7 @@ import {
 import { signJWT, verifyJwt } from '../../core/lib/jsonwebtoken.js'
 import { sendMail } from '../../core/lib/nodemailer.js'
 import { db } from '../../core/lib/prisma.js'
+import { createDefaultProfileImage } from '../../core/utils/profile-image.js'
 import { sendErrorResponse, sendSuccessResponse } from '../../core/utils/response.js'
 import type {
   CreateAccountPayload,
@@ -25,14 +26,22 @@ import type {
 
 const createAccount = expressAsyncHandler(async (req, res, next) => {
   const { email, password, username } = req.body as CreateAccountPayload
-  const user = await db.user.findUnique({ where: { email } })
-  if (user)
-    return next(createHttpError(StatusCodes.BAD_REQUEST, 'Email address already exists'))
+  const user = await db.user.findFirst({
+    where: {
+      OR: [{ email }, { username }],
+    },
+  })
+  if (user) {
+    return next(
+      createHttpError(StatusCodes.BAD_REQUEST, 'Email address or username already exists'),
+    )
+  }
+  const image = await createDefaultProfileImage(username)
   const verificationToken = crypto.randomBytes(32).toString('hex')
   const verificationTokenExpiresAt = new Date(Date.now() + VERIFICATION_TOKEN_EXPIRES_IN_MS)
   const hashedPassword = await argon2.hash(password)
   const newUser = await db.user.create({
-    data: { email, password: hashedPassword, username },
+    data: { email, password: hashedPassword, username, image },
   })
   await db.verificationToken.create({
     data: {
@@ -163,6 +172,7 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
               createdAt: true,
               updatedAt: true,
               role: true,
+              image: true,
             },
           })
           return sendSuccessResponse({
