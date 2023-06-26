@@ -7,7 +7,7 @@ export const CommentSchema = z.object({
   text: z.string().nonempty(),
   userId: z.string().uuid(),
   videoId: z.string().uuid(),
-  user: UserSchema.pick({ id: true, username: true }),
+  user: UserSchema.pick({ id: true, username: true, image: true }),
   createdAt: z.date({ coerce: true }),
   updatedAt: z.date({ coerce: true }),
 })

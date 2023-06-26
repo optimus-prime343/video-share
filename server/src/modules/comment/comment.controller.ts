@@ -31,6 +31,7 @@ export const getCommentsByVideo = expressAsyncHandler(async (req, res, _next) =>
         select: {
           id: true,
           username: true,
+          image: true,
         },
       },
     },
@@ -65,6 +66,7 @@ export const createComment = expressAsyncHandler(async (req, res, _next) => {
         select: {
           id: true,
           username: true,
+          image: true,
         },
       },
     },

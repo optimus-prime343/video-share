@@ -1,4 +1,4 @@
-import { Avatar, createStyles, Group, Text } from '@mantine/core'
+import { Avatar, createStyles, Flex, Spoiler, Text } from '@mantine/core'
 import dayjs from 'dayjs'
 import { memo } from 'react'
 
@@ -11,15 +11,17 @@ export interface CommentItemProps {
 const CommentItem_ = ({ comment }: CommentItemProps) => {
   const { classes } = useStyles()
   return (
-    <Group align='flex-start'>
-      <Avatar radius='xl'></Avatar>
+    <Flex align='flex-start' gap='sm'>
+      <Avatar radius='xl' src={comment.user.image} />
       <div className={classes.commentContent}>
         <Text color='dimmed' mb={4} size='sm'>
           {comment.user.username} {DOT} {dayjs(comment.createdAt).fromNow()}
         </Text>
-        <Text>{comment.text}</Text>
+        <Spoiler hideLabel='Read less' maxHeight={75} showLabel='Read more'>
+          {comment.text}
+        </Spoiler>
       </div>
-    </Group>
+    </Flex>
   )
 }
 
