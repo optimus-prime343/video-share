@@ -7,23 +7,34 @@ import { createCanvas } from 'canvas'
 const WIDTH = 200
 const HEIGHT = 200
 
-export const createDefaultProfileImage = async (username: string): Promise<string> => {
-  const canvas = createCanvas(WIDTH, HEIGHT)
+export interface CreateDefaultImageOptions {
+  word: string
+  uploadDir: string
+  width?: number
+  height?: number
+}
+export const createDefaultImage = async ({
+  word,
+  uploadDir,
+  width = WIDTH,
+  height = HEIGHT,
+}: CreateDefaultImageOptions): Promise<string> => {
+  const canvas = createCanvas(width, height)
   const context = canvas.getContext('2d')
   //background color
   context.fillStyle = getRandomColor()
-  context.fillRect(0, 0, WIDTH, HEIGHT)
+  context.fillRect(0, 0, width, height)
   //text
   context.font = 'bold 100px Arial'
   context.textAlign = 'center'
   //  set text color
   context.fillStyle = '#000'
-  context.fillText(username.slice(0, 2).toUpperCase(), WIDTH / 2, HEIGHT / 1.5)
+  context.fillText(word.slice(0, 2).toUpperCase(), width / 2, height / 1.5)
   const buffer = canvas.toBuffer('image/png')
   const imageId = crypto.randomUUID()
-  const imagePath = `/profile/${imageId}.png`
-  const imageUploadUrl = path.join(process.cwd(), 'public', imagePath)
-  await fs.writeFile(imageUploadUrl, buffer)
+  const imagePath = `/${uploadDir}/${imageId}.png`
+  const uploadPath = path.join(process.cwd(), 'public', imagePath)
+  await fs.writeFile(uploadPath, buffer)
   return imagePath
 }
 

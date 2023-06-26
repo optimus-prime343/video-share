@@ -16,7 +16,7 @@ import {
 import { signJWT, verifyJwt } from '../../core/lib/jsonwebtoken.js'
 import { sendMail } from '../../core/lib/nodemailer.js'
 import { db } from '../../core/lib/prisma.js'
-import { createDefaultProfileImage } from '../../core/utils/profile-image.js'
+import { createDefaultImage } from '../../core/utils/default-image.js'
 import { sendErrorResponse, sendSuccessResponse } from '../../core/utils/response.js'
 import type {
   CreateAccountPayload,
@@ -36,7 +36,10 @@ const createAccount = expressAsyncHandler(async (req, res, next) => {
       createHttpError(StatusCodes.BAD_REQUEST, 'Email address or username already exists'),
     )
   }
-  const image = await createDefaultProfileImage(username)
+  const image = await createDefaultImage({
+    uploadDir: 'profile',
+    word: username,
+  })
   const verificationToken = crypto.randomBytes(32).toString('hex')
   const verificationTokenExpiresAt = new Date(Date.now() + VERIFICATION_TOKEN_EXPIRES_IN_MS)
   const hashedPassword = await argon2.hash(password)
