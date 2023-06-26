@@ -38,7 +38,7 @@ const createAccount = expressAsyncHandler(async (req, res, next) => {
   }
   const image = await createDefaultImage({
     uploadDir: 'profile',
-    word: username,
+    word: username.slice(0, 2),
   })
   const verificationToken = crypto.randomBytes(32).toString('hex')
   const verificationTokenExpiresAt = new Date(Date.now() + VERIFICATION_TOKEN_EXPIRES_IN_MS)

@@ -29,7 +29,7 @@ export const createDefaultImage = async ({
   context.textAlign = 'center'
   //  set text color
   context.fillStyle = '#000'
-  context.fillText(word.slice(0, 2).toUpperCase(), width / 2, height / 1.5)
+  context.fillText(word, width / 2, height / 1.5)
   const buffer = canvas.toBuffer('image/png')
   const imageId = crypto.randomUUID()
   const imagePath = `/${uploadDir}/${imageId}.png`
