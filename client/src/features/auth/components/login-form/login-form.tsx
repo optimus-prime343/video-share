@@ -2,7 +2,8 @@ import { Button, PasswordInput, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useCallback } from 'react'
 
-import { LoginFormData, LoginSchema } from '@/features/auth/schemas/login'
+import type { LoginFormData} from '@/features/auth/schemas/login';
+import { LoginSchema } from '@/features/auth/schemas/login'
 
 export interface LoginFormProps {
   onSubmit: (data: LoginFormData) => void

@@ -3,7 +3,8 @@ import { z } from 'zod'
 
 import { api } from '@/core/utils/api'
 import { parseAndThrowErrorResponse } from '@/core/utils/response'
-import { CommentSchema, CreateCommentFormData } from '@/features/comment/schemas/comment'
+import type { CreateCommentFormData } from '@/features/comment/schemas/comment';
+import { CommentSchema } from '@/features/comment/schemas/comment'
 
 export const CreateCommentResponseSchema = z.object({
   message: z.string(),

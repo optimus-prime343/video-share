@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { forwardRef, memo } from 'react'
 
 import { pluralize } from '@/core/utils/pluralize'
-import { Video } from '@/features/video/schemas/video'
+import type { Video } from '@/features/video/schemas/video'
 
 export interface SuggestedVideoItemProps {
   video: Video

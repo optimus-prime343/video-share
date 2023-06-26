@@ -1,6 +1,6 @@
 import { LoadingOverlay } from '@mantine/core'
 import { useRouter } from 'next/router'
-import { ComponentPropsWithoutRef, ComponentType } from 'react'
+import type { ComponentPropsWithoutRef, ComponentType } from 'react'
 
 import { useUser } from '@/features/auth/hooks/use-user'
 

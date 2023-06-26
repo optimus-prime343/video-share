@@ -1,6 +1,7 @@
 import { QueryClient } from '@tanstack/react-query'
-import axios, { AxiosInstance, AxiosRequestConfig, Method } from 'axios'
-import { z, ZodTypeAny } from 'zod'
+import type { AxiosInstance, AxiosRequestConfig, Method } from 'axios';
+import axios from 'axios'
+import type { z, ZodTypeAny } from 'zod'
 
 import { axiosInstance } from '@/core/lib/axios'
 

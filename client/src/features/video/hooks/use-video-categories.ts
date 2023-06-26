@@ -3,7 +3,8 @@ import { z } from 'zod'
 
 import { api } from '@/core/utils/api'
 import { parseAndThrowErrorResponse } from '@/core/utils/response'
-import { VideoCategory, VideoCategorySchema } from '@/features/video/schemas/video'
+import type { VideoCategory} from '@/features/video/schemas/video';
+import { VideoCategorySchema } from '@/features/video/schemas/video'
 
 export const GetVideoCategoriesResponseSchema = z.object({
   data: z.array(VideoCategorySchema),

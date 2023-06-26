@@ -1,4 +1,5 @@
-import Image, { ImageProps } from 'next/image'
+import type { ImageProps } from 'next/image';
+import Image from 'next/image'
 import { useMemo } from 'react'
 
 export interface PreviewImageProps extends Omit<ImageProps, 'width' | 'height' | 'src'> {

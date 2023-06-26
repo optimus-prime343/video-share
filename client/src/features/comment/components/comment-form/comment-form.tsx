@@ -6,8 +6,9 @@ import { memo, useCallback } from 'react'
 
 import { useUser } from '@/features/auth/hooks/use-user'
 import { useCreateComment } from '@/features/comment/hooks/use-create-comment'
+import type {
+  CreateCommentFormData} from '@/features/comment/schemas/comment';
 import {
-  CreateCommentFormData,
   CreateCommentFormSchema,
 } from '@/features/comment/schemas/comment'
 

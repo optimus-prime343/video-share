@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 import { api } from '@/core/utils/api'
 import { parseAndThrowErrorResponse } from '@/core/utils/response'
-import { SignupFormData } from '@/features/auth/schemas/signup'
+import type { SignupFormData } from '@/features/auth/schemas/signup'
 
 const SignupResponseSchema = z.object({ message: z.string() })
 

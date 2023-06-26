@@ -4,7 +4,8 @@ import { z } from 'zod'
 import { api } from '@/core/utils/api'
 import { parseAndThrowErrorResponse } from '@/core/utils/response'
 import { useUser } from '@/features/auth/hooks/use-user'
-import { Channel, ChannelSchema } from '@/features/channel/schemas/channel'
+import type { Channel} from '@/features/channel/schemas/channel';
+import { ChannelSchema } from '@/features/channel/schemas/channel'
 
 export const GetUserChannelResponseSchema = z.object({
   message: z.string(),

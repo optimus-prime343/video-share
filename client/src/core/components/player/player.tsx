@@ -1,11 +1,13 @@
+import type {
+  PlayerProps as VimePlayerProps} from '@vime/react';
 import {
   DefaultUi,
   Player as VimePlayer,
-  PlayerProps as VimePlayerProps,
   Video,
 } from '@vime/react'
 import assert from 'assert'
-import { forwardRef, memo, ReactNode, useMemo } from 'react'
+import type { ReactNode} from 'react';
+import { forwardRef, memo, useMemo } from 'react'
 
 export interface PlayerProps extends Partial<VimePlayerProps> {
   videoId: string

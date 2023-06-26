@@ -3,7 +3,8 @@ import { z } from 'zod'
 
 import { api } from '@/core/utils/api'
 import { parseAndThrowErrorResponse } from '@/core/utils/response'
-import { Video, VideoSchema } from '@/features/video/schemas/video'
+import type { Video} from '@/features/video/schemas/video';
+import { VideoSchema } from '@/features/video/schemas/video'
 
 export const UploadVideoResponseSchema = z.object({
   message: z.string(),

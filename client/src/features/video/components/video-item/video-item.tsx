@@ -7,7 +7,7 @@ import { forwardRef } from 'react'
 import { useCalculateVideoDuration } from '@/core/hooks/use-calculate-video-duration'
 import { formatCount } from '@/core/utils/count'
 import { pluralize } from '@/core/utils/pluralize'
-import { Video } from '@/features/video/schemas/video'
+import type { Video } from '@/features/video/schemas/video'
 
 export interface VideoItemProps {
   video: Video

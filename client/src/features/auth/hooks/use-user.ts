@@ -3,7 +3,8 @@ import { z } from 'zod'
 
 import { api } from '@/core/utils/api'
 import { parseAndThrowErrorResponse } from '@/core/utils/response'
-import { User, UserSchema } from '@/features/auth/schemas/user'
+import type { User} from '@/features/auth/schemas/user';
+import { UserSchema } from '@/features/auth/schemas/user'
 
 export const USER_QUERY_KEY = ['user']
 

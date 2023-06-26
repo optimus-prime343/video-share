@@ -3,7 +3,8 @@ import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useState } from 'react'
 
 import { CustomRichTextEditor } from '@/core/components/custom-rich-text-editor'
-import { VideoFormData, VideoFormSchema } from '@/features/video/schemas/video'
+import type { VideoFormData} from '@/features/video/schemas/video';
+import { VideoFormSchema } from '@/features/video/schemas/video'
 
 export interface VideoFormProps {
   onSubmit: (data: FormData) => void

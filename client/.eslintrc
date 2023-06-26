@@ -17,6 +17,7 @@
     "no-unused-vars": "off",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
+    "@typescript-eslint/consistent-type-imports": "error",
     "react/jsx-sort-props": "warn",
     "@typescript-eslint/no-unused-vars": [
       "error",

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
-import { VideoCategory } from '@/features/video/schemas/video'
+import type { VideoCategory } from '@/features/video/schemas/video'
 
 export interface VideoCategoryListProps {
   categories: VideoCategory[]

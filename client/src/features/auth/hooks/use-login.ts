@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { api } from '@/core/utils/api'
 import { parseAndThrowErrorResponse } from '@/core/utils/response'
 
-import { AuthData } from '../schemas/login'
+import type { AuthData } from '../schemas/login'
 
 const LoginResponseSchema = z.object({ message: z.string() })
 

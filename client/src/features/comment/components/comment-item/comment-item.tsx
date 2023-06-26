@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { memo } from 'react'
 
 import { DOT } from '@/core/constants/strings'
-import { Comment } from '@/features/comment/schemas/comment'
+import type { Comment } from '@/features/comment/schemas/comment'
 
 export interface CommentItemProps {
   comment: Comment

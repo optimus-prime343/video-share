@@ -1,8 +1,9 @@
-import {
+import type {
   ColorScheme,
+  MantineProviderProps} from '@mantine/core';
+import {
   ColorSchemeProvider,
-  MantineProvider,
-  MantineProviderProps,
+  MantineProvider
 } from '@mantine/core'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'

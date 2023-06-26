@@ -4,9 +4,10 @@ import { useCallback, useState } from 'react'
 
 import { CustomRichTextEditor } from '@/core/components/custom-rich-text-editor'
 import { PreviewImage } from '@/core/components/preview-image'
-import {
+import type {
   Channel,
-  ChannelFormData,
+  ChannelFormData} from '@/features/channel/schemas/channel';
+import {
   ChannelFormSchema,
 } from '@/features/channel/schemas/channel'
 

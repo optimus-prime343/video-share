@@ -1,9 +1,10 @@
 import { Loader, Stack } from '@mantine/core'
-import {
+import type {
   ComponentPropsWithoutRef,
   ComponentPropsWithRef,
   ElementType,
-  ReactNode,
+  ReactNode} from 'react';
+import {
   useCallback,
   useEffect,
   useRef,

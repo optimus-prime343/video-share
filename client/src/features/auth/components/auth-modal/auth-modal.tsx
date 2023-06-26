@@ -9,8 +9,8 @@ import { SignupForm } from '@/features/auth/components/signup-form'
 import { useLogin } from '@/features/auth/hooks/use-login'
 import { useSignup } from '@/features/auth/hooks/use-signup'
 import { USER_QUERY_KEY } from '@/features/auth/hooks/use-user'
-import { LoginFormData } from '@/features/auth/schemas/login'
-import { SignupFormData } from '@/features/auth/schemas/signup'
+import type { LoginFormData } from '@/features/auth/schemas/login'
+import type { SignupFormData } from '@/features/auth/schemas/signup'
 import {
   useAuthModalClose,
   useAuthModalOpened,

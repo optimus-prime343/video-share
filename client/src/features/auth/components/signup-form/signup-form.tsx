@@ -1,7 +1,8 @@
 import { Button, PasswordInput, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 
-import { SignupFormData, SignupSchema } from '@/features/auth/schemas/signup'
+import type { SignupFormData} from '@/features/auth/schemas/signup';
+import { SignupSchema } from '@/features/auth/schemas/signup'
 
 export interface SignupFormProps {
   onSubmit: (data: SignupFormData) => void

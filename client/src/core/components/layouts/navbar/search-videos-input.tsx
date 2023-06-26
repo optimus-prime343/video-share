@@ -1,7 +1,8 @@
 import { ActionIcon, TextInput } from '@mantine/core'
 import { IconSearch, IconX } from '@tabler/icons-react'
 import { useRouter } from 'next/router'
-import { KeyboardEvent, useState } from 'react'
+import type { KeyboardEvent} from 'react';
+import { useState } from 'react'
 import { useCallback } from 'react'
 
 export const SearchVideosInput = () => {
