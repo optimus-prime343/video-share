@@ -1,4 +1,4 @@
-import { createStyles, Stack, Text, Title } from '@mantine/core'
+import { Avatar, createStyles, Stack, Text, Title } from '@mantine/core'
 import dayjs from 'dayjs'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -39,17 +39,14 @@ const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => 
         </div>
       ) : null}
       <div className={classes.videoItemInfoContainer}>
-        {video.channel.thumbnail ? (
-          <Link href={channelHref} title={video.channel.name}>
-            <Image
-              alt={`${video.channel.name} profile image`}
-              height={50}
-              src={video.channel.thumbnail}
-              style={{ borderRadius: '50%', objectFit: 'cover' }}
-              width={50}
-            />
-          </Link>
-        ) : null}
+        <Link href={channelHref} title={video.channel.name}>
+          <Avatar
+            alt={`${video.channel.name} avatar`}
+            radius='xl'
+            size='lg'
+            src={video.channel.avatar}
+          />
+        </Link>
         <Stack spacing={4}>
           <Title order={4} title={video.title}>
             {video.title}

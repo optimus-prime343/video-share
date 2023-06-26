@@ -27,9 +27,11 @@ export const createDefaultImage = async ({
   //text
   context.font = 'bold 100px Arial'
   context.textAlign = 'center'
+  context.textBaseline = 'middle'
   //  set text color
-  context.fillStyle = '#000'
-  context.fillText(word, width / 2, height / 1.5)
+  context.fillStyle = '#fff'
+  // fix not centering
+  context.fillText(word, canvas.width / 2, canvas.height / 2)
   const buffer = canvas.toBuffer('image/png')
   const imageId = crypto.randomUUID()
   const imagePath = `/${uploadDir}/${imageId}.png`

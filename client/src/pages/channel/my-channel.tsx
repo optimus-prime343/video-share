@@ -8,14 +8,20 @@ import { useCreateChannel } from '@/features/channel/hooks/use-create-channel'
 import { useUserChannel } from '@/features/channel/hooks/use-user-channel'
 
 const MyChannelPage = () => {
-  const { data: channel } = useUserChannel()
+  const { data: channel, refetch: refetchUserChannel } = useUserChannel()
   const createChannel = useCreateChannel()
 
   const handleCreateChannelFormSubmit = useCallback(
     (data: FormData) => {
       createChannel.mutate(data, {
-        onSuccess: ({ message, data }) => {
-          console.log(message, data)
+        onSuccess: ({ message }) => {
+          refetchUserChannel().then(() => {
+            showNotification({
+              title: 'Channel created',
+              message,
+              color: 'green',
+            })
+          })
         },
         onError: error => {
           showNotification({
@@ -26,7 +32,7 @@ const MyChannelPage = () => {
         },
       })
     },
-    [createChannel]
+    [createChannel, refetchUserChannel]
   )
 
   const handleUpdateChannelFormSubmit = useCallback((data: FormData) => {
@@ -44,7 +50,11 @@ const MyChannelPage = () => {
           onSubmit={handleUpdateChannelFormSubmit}
         />
       ) : (
-        <ChannelForm mode='create' onSubmit={handleCreateChannelFormSubmit} />
+        <ChannelForm
+          isSubmitting={createChannel.isLoading}
+          mode='create'
+          onSubmit={handleCreateChannelFormSubmit}
+        />
       )}
     </Box>
   )
