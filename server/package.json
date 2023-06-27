@@ -23,6 +23,7 @@
   "author": "Jakub Synowiec <jsynowiec@users.noreply.github.com>",
   "license": "Apache-2.0",
   "dependencies": {
+    "@huggingface/inference": "^2.5.2",
     "@prisma/client": "^4.14.0",
     "argon2": "^0.30.3",
     "canvas": "^2.11.2",

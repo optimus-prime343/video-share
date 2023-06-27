@@ -18,6 +18,7 @@ const configSchema = z.object({
   JWT_ACCESS_TOKEN_EXPIRES_IN: z.string(),
   JWT_REFRESH_TOKEN_SECRET: z.string(),
   JWT_REFRESH_TOKEN_EXPIRES_IN: z.string(),
+  HF_ACCESS_TOKEN: z.string(),
 })
 
 configSchema.parse(process.env)

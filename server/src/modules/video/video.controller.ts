@@ -311,7 +311,6 @@ export const likeVideo = expressAsyncHandler(async (req, res, _next) => {
   })
 })
 
-
 export const dislikeVideo = expressAsyncHandler(async (req, res, _next) => {
   const user = res.locals.user as User
   const { videoId } = req.query as LikeDislikeVideoQuery
@@ -392,7 +391,6 @@ export const dislikeVideo = expressAsyncHandler(async (req, res, _next) => {
     message: 'Video disliked successfully.',
   })
 })
-
 
 export const getVideoLikedDislikedStatus = expressAsyncHandler(async (req, res, _next) => {
   const { videoId } = req.query as VideoLikedDislikedStatusQuery
