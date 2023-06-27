@@ -3,7 +3,7 @@ import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useState } from 'react'
 
 import { CustomRichTextEditor } from '@/core/components/custom-rich-text-editor'
-import type { VideoFormData} from '@/features/video/schemas/video';
+import type { VideoFormData } from '@/features/video/schemas/video'
 import { VideoFormSchema } from '@/features/video/schemas/video'
 
 export interface VideoFormProps {
@@ -91,7 +91,7 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           placeholder='Upload your thumbnail'
           value={thumbnailFile}
         />
-        <Button disabled={!form.isValid || !videoFile} loading={isSubmitting} type='submit'>
+        <Button disabled={!form.isValid() || !videoFile} loading={isSubmitting} type='submit'>
           Upload video
         </Button>
       </Stack>

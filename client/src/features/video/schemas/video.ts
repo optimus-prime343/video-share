@@ -34,7 +34,7 @@ export const VideoCategorySchema = z.object({
 
 export const VideoFormSchema = z.object({
   title: z.string().nonempty(),
-  description: z.string().optional(),
+  description: z.string().nonempty(),
   category: z.string().nonempty(),
 })
 

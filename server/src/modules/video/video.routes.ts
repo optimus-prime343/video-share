@@ -3,6 +3,7 @@ import multer from 'multer'
 
 import { THUMBNAIL_IMAGE_FIELD, VIDEO_FIELD } from '../../core/constants/strings.js'
 import { authRequired } from '../../core/middlewares/auth-required.js'
+import { nsfwTextFilter } from '../../core/middlewares/nsfw-text-filter.js'
 import { validateResource } from '../../core/middlewares/validate-resource.js'
 import { imageOrVideoFileFilter } from '../../core/utils/file.js'
 import {
@@ -71,6 +72,11 @@ videoRouter.post(
     { name: THUMBNAIL_IMAGE_FIELD, maxCount: 1 },
   ]),
   validateResource(CreateVideoSchema),
+  nsfwTextFilter([
+    (req): unknown => req.body.title,
+    (req): unknown => req.body.description,
+    (req): unknown => req.body.category,
+  ]),
   createVideo,
 )
 
