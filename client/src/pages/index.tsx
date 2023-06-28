@@ -39,7 +39,7 @@ const HomePage = () => {
         renderItem={video => <VideoItem video={video} />}
         wrapperAs={Grid.Col}
         wrapperProps={{
-          span: 'content',
+          span: 3,
         }}
       />
     </Stack>

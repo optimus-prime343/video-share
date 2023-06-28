@@ -1,4 +1,4 @@
-import { Avatar, createStyles, Stack, Text, Title } from '@mantine/core'
+import { Avatar, createStyles, Stack, Text } from '@mantine/core'
 import dayjs from 'dayjs'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -33,7 +33,7 @@ const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => 
             height={200}
             src={video.thumbnail}
             style={{ objectFit: 'cover', borderRadius: '8px' }}
-            width={400}
+            width={350}
           />
           <Text className={classes.videoLength}>{duration}</Text>
         </div>
@@ -43,22 +43,23 @@ const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => 
           <Avatar
             alt={`${video.channel.name} avatar`}
             radius='xl'
-            size='lg'
             src={video.channel.avatar}
           />
         </Link>
         <Stack spacing={4}>
-          <Title order={4} title={video.title}>
+          <Text fw='bold' title={video.title}>
             {video.title}
-          </Title>
+          </Text>
           <Link
             className={classes.videoChannelLink}
             href={channelHref}
             title={video.channel.name}
           >
-            <Text>{video.channel.name}</Text>
+            <Text color='dimmed' size='sm'>
+              {video.channel.name}
+            </Text>
           </Link>
-          <Text>
+          <Text color='dimmed' size='sm'>
             {formatCount(video.views)} {pluralize('View', video.views)} •{' '}
             {dayjs(video.createdAt).fromNow()}
           </Text>
@@ -75,7 +76,7 @@ const useStyles = createStyles(theme => ({
     textDecoration: 'none',
     color: 'inherit',
     display: 'inline-block',
-    maxWidth: '400px',
+    maxWidth: '350px',
 
     [theme.fn.smallerThan('md')]: {
       maxWidth: '100%',
@@ -95,9 +96,9 @@ const useStyles = createStyles(theme => ({
     borderRadius: '4px',
   },
   videoItemInfoContainer: {
-    marginTop: theme.spacing.md,
+    marginTop: theme.spacing.sm,
     display: 'flex',
-    gap: theme.spacing.md,
+    gap: theme.spacing.sm,
   },
   videoChannelLink: {
     textDecoration: 'none',
