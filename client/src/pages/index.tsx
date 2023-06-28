@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { InfiniteScroll } from '@/core/components/infinite-scroll'
 import { VideoCategoryList } from '@/features/video/components/video-category-list/video-category-list'
 import { VideoItem } from '@/features/video/components/video-item'
+import { VideosSkeleton } from '@/features/video/components/videos-skeleton'
 import { useVideoCategories } from '@/features/video/hooks/use-video-categories'
 import { useVideos } from '@/features/video/hooks/use-videos'
 
@@ -18,6 +19,7 @@ const HomePage = () => {
     hasNextPage: hasNextVideosPage,
     isFetchingNextPage: isFetchingNextVideosPage,
     fetchNextPage: fetchNextVideosPage,
+    isLoading: isVideosLoading,
   } = useVideos({ category, search })
   const { data: videoCategories } = useVideoCategories()
 
@@ -28,20 +30,24 @@ const HomePage = () => {
   return (
     <Stack px='md' py='sm'>
       <VideoCategoryList categories={videoCategories ?? []} />
-      <InfiniteScroll
-        align='flex-start'
-        as={Grid}
-        fetchNextPage={fetchNextVideosPage}
-        gutter='lg'
-        hasNextPage={hasNextVideosPage}
-        isFetchingNextPage={isFetchingNextVideosPage}
-        items={videos}
-        renderItem={video => <VideoItem video={video} />}
-        wrapperAs={Grid.Col}
-        wrapperProps={{
-          span: 3,
-        }}
-      />
+      {isVideosLoading ? (
+        <VideosSkeleton />
+      ) : (
+        <InfiniteScroll
+          align='flex-start'
+          as={Grid}
+          fetchNextPage={fetchNextVideosPage}
+          gutter='lg'
+          hasNextPage={hasNextVideosPage}
+          isFetchingNextPage={isFetchingNextVideosPage}
+          items={videos}
+          renderItem={video => <VideoItem video={video} />}
+          wrapperAs={Grid.Col}
+          wrapperProps={{
+            span: 3,
+          }}
+        />
+      )}
     </Stack>
   )
 }

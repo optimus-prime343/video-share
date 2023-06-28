@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { forwardRef } from 'react'
 
+import { IMAGE_BLUR_DATA_URL } from '@/core/constants/strings'
 import { useCalculateVideoDuration } from '@/core/hooks/use-calculate-video-duration'
 import { formatCount } from '@/core/utils/count'
 import { pluralize } from '@/core/utils/pluralize'
@@ -30,7 +31,9 @@ const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => 
         <div className={classes.videoThumbnailContainer}>
           <Image
             alt={`${video.title} thumbnail`}
+            blurDataURL={IMAGE_BLUR_DATA_URL}
             height={200}
+            placeholder='blur'
             src={video.thumbnail}
             style={{ objectFit: 'cover', borderRadius: '8px' }}
             width={350}
