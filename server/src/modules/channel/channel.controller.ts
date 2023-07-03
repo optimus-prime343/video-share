@@ -7,7 +7,7 @@ import { db } from '../../core/lib/prisma.js'
 import { createDefaultImage } from '../../core/utils/default-image.js'
 import { sendSuccessResponse } from '../../core/utils/response.js'
 import { uploadFile } from '../../core/utils/upload.js'
-import type { CreateChannelRequest } from './channel.schema.js'
+import type { CreateChannelRequest, GetChannelSubscribersRequest } from './channel.schema.js'
 
 export const createChannel = expressAsyncHandler(async (req, res, next) => {
   const user = res.locals.user as User
@@ -73,5 +73,20 @@ export const getUserChannel = expressAsyncHandler(async (_req, res, _next) => {
     res,
     message: 'User channel fetched successfully',
     data: userChannel,
+  })
+})
+
+export const getChannelSubscribers = expressAsyncHandler(async (req, res) => {
+  const { channelId } = req.params as GetChannelSubscribersRequest['params']
+  const subscribers = await db.subscription.count({
+    where: {
+      channelId,
+    },
+  })
+  sendSuccessResponse({
+    res,
+    data: {
+      subscribers,
+    },
   })
 })

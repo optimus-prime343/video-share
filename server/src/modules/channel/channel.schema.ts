@@ -14,5 +14,11 @@ export const CreateChannelSchema = z.object({
     [AVATAR_IMAGE_FIELD]: z.array(FileSchema).optional(),
   }),
 })
+export const GetChannelSubscribersRequestSchema = z.object({
+  params: z.object({
+    channelId: z.string().uuid(),
+  }),
+})
 
 export type CreateChannelRequest = z.infer<typeof CreateChannelSchema>
+export type GetChannelSubscribersRequest = z.infer<typeof GetChannelSubscribersRequestSchema>

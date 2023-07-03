@@ -5,7 +5,7 @@ import { AVATAR_IMAGE_FIELD, THUMBNAIL_IMAGE_FIELD } from '../../core/constants/
 import { authRequired } from '../../core/middlewares/auth-required.js'
 import { validateResource } from '../../core/middlewares/validate-resource.js'
 import { imageFileFilter } from '../../core/utils/file.js'
-import { createChannel, getUserChannel } from './channel.controller.js'
+import { createChannel, getChannelSubscribers, getUserChannel } from './channel.controller.js'
 import { CreateChannelSchema } from './channel.schema.js'
 
 const channelRouter = Router()
@@ -13,6 +13,7 @@ const channelRouter = Router()
 channelRouter.use(authRequired)
 
 channelRouter.get('/get-user-channel', getUserChannel)
+channelRouter.get('/subscribers/:channelId', getChannelSubscribers)
 channelRouter.post(
   '/',
   multer({ fileFilter: imageFileFilter }).fields([

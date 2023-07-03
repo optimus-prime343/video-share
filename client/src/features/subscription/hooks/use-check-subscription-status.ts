@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import { api } from '@/core/utils/api'
 import { parseAndThrowErrorResponse } from '@/core/utils/response'
+import { useUser } from '@/features/auth/hooks/use-user'
 
 export const CheckSubscriptionsStatusResponseSchema = z.object({
   data: z.object({
@@ -14,8 +15,9 @@ export type CheckSubscriptionsStatusResponse = z.infer<
 >['data']
 
 export const useCheckSubscriptionStatus = (channelId: string | undefined) => {
+  const { data: user } = useUser()
   return useQuery<CheckSubscriptionsStatusResponse, Error>({
-    queryKey: ['subscription', 'status', channelId],
+    queryKey: ['subscription', 'status', channelId, user?.id],
     queryFn: () =>
       api
         .GET(CheckSubscriptionsStatusResponseSchema, `/subscription/status/${channelId}`)

@@ -33,6 +33,7 @@ import { useRequiresLogin } from '@/core/hooks/use-requires-login'
 import { formatCount } from '@/core/utils/count'
 import { pluralize } from '@/core/utils/pluralize'
 import { useUser } from '@/features/auth/hooks/use-user'
+import { useSubscribersCount } from '@/features/channel/hooks/use-subscribers-count'
 import { CommentForm } from '@/features/comment/components/comment-form/comment-form'
 import { CommentItem } from '@/features/comment/components/comment-item'
 import { useComments } from '@/features/comment/hooks/use-comments'
@@ -73,6 +74,7 @@ const WatchPage = () => {
   const { data: user } = useUser()
   const { data: videoLikedDislikedStatus } = useVideoLikedDislikedStatus(videoId)
   const { data: subscriptionStatus } = useCheckSubscriptionStatus(videoDetail?.channel?.id)
+  const { data: subscribersCount } = useSubscribersCount(videoDetail?.channel?.id)
 
   const requiresLogin = useRequiresLogin()
   const updateViewCount = useUpdateViewCount()
@@ -134,10 +136,14 @@ const WatchPage = () => {
       onConfirm: () => {
         unsubscribe.mutate(videoDetail.channel.id, {
           onSuccess: async () => {
-            await queryClient.invalidateQueries([
-              'subscription',
-              'status',
-              videoDetail.channel.id,
+            await Promise.all([
+              queryClient.invalidateQueries([
+                'subscription',
+                'status',
+                videoDetail.channel.id,
+                user?.id,
+              ]),
+              queryClient.invalidateQueries(['subscribers-count', videoDetail.channel.id]),
             ])
           },
           onError: error => {
@@ -150,14 +156,22 @@ const WatchPage = () => {
         })
       },
     })
-  }, [queryClient, unsubscribe, videoDetail])
+  }, [queryClient, unsubscribe, user?.id, videoDetail])
 
   const handleSubscribe = useCallback(() => {
     if (!videoDetail) return
     if (subscriptionStatus?.status === 'subscribed') return handleUnsubscribe()
     subscribe.mutate(videoDetail.channel.id, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries(['subscription', 'status', videoDetail.channel.id])
+        await Promise.all([
+          queryClient.invalidateQueries([
+            'subscription',
+            'status',
+            videoDetail.channel.id,
+            user?.id,
+          ]),
+          queryClient.invalidateQueries(['subscribers-count', videoDetail.channel.id]),
+        ])
       },
       onError: error => {
         showNotification({
@@ -167,7 +181,14 @@ const WatchPage = () => {
         })
       },
     })
-  }, [handleUnsubscribe, queryClient, subscribe, subscriptionStatus?.status, videoDetail])
+  }, [
+    handleUnsubscribe,
+    queryClient,
+    subscribe,
+    subscriptionStatus?.status,
+    user?.id,
+    videoDetail,
+  ])
 
   const handleDownloadVideo = useCallback(() => {
     if (!videoDetail) return
@@ -233,12 +254,15 @@ const WatchPage = () => {
                 <Text fw='bold' size='lg'>
                   {videoDetail.channel.name}
                 </Text>
-                <Text>0 subscribers</Text>
+                <Text>
+                  {formatCount(subscribersCount ?? 0)}{' '}
+                  {pluralize('Subscriber', subscribersCount ?? 0)}
+                </Text>
               </div>
               {videoDetail.channel.userId !== user?.id ? (
                 <Button
                   loading={subscribe.isLoading}
-                  onClick={handleSubscribe}
+                  onClick={requiresLogin(handleSubscribe)}
                   variant={subscriptionStatus?.status === 'subscribed' ? 'outline' : 'filled'}
                 >
                   {subscriptionStatus?.status === 'subscribed' ? 'Subscribed' : 'Subscribe'}
