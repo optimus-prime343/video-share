@@ -10,10 +10,11 @@ import { CreateChannelSchema } from './channel.schema.js'
 
 const channelRouter = Router()
 
+channelRouter.get('/subscribers/:channelId', getChannelSubscribers)
+
 channelRouter.use(authRequired)
 
 channelRouter.get('/get-user-channel', getUserChannel)
-channelRouter.get('/subscribers/:channelId', getChannelSubscribers)
 channelRouter.post(
   '/',
   multer({ fileFilter: imageFileFilter }).fields([
