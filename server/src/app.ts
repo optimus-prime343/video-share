@@ -12,6 +12,7 @@ import { sendErrorResponse } from './core/utils/response.js'
 import { authRouter } from './modules/auth/auth.routes.js'
 import { channelRouter } from './modules/channel/channel.routes.js'
 import { commentRouter } from './modules/comment/comment.routes.js'
+import { subscriptionRouter } from './modules/subscription/subscription.routes.js'
 import { videoRouter } from './modules/video/video.routes.js'
 
 const app = Express()
@@ -36,6 +37,7 @@ app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/channel', channelRouter)
 app.use('/api/v1/video', videoRouter)
 app.use('/api/v1/comment', commentRouter)
+app.use('/api/v1/subscription', subscriptionRouter)
 
 // 404 error handler
 app.use('*', (req, res) => {

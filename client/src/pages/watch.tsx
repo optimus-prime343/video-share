@@ -11,6 +11,8 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import { openConfirmModal } from '@mantine/modals'
+import { showNotification } from '@mantine/notifications'
 import {
   IconDownload,
   IconShare,
@@ -30,9 +32,13 @@ import { Player } from '@/core/components/player'
 import { useRequiresLogin } from '@/core/hooks/use-requires-login'
 import { formatCount } from '@/core/utils/count'
 import { pluralize } from '@/core/utils/pluralize'
+import { useUser } from '@/features/auth/hooks/use-user'
 import { CommentForm } from '@/features/comment/components/comment-form/comment-form'
 import { CommentItem } from '@/features/comment/components/comment-item'
 import { useComments } from '@/features/comment/hooks/use-comments'
+import { useCheckSubscriptionStatus } from '@/features/subscription/hooks/use-check-subscription-status'
+import { useSubscribe } from '@/features/subscription/hooks/use-subscribe'
+import { useUnsubscribe } from '@/features/subscription/hooks/use-unsubscribe'
 import { SuggestedVideoItem } from '@/features/video/components/suggested-video-item'
 import { useDislikeVideo } from '@/features/video/hooks/use-dislike-video'
 import { useLikeVideo } from '@/features/video/hooks/use-like-video'
@@ -64,12 +70,16 @@ const WatchPage = () => {
     fetchNextPage: fetchNextCommentsPage,
   } = useComments(videoId)
 
+  const { data: user } = useUser()
   const { data: videoLikedDislikedStatus } = useVideoLikedDislikedStatus(videoId)
+  const { data: subscriptionStatus } = useCheckSubscriptionStatus(videoDetail?.channel?.id)
 
   const requiresLogin = useRequiresLogin()
   const updateViewCount = useUpdateViewCount()
   const likeVideo = useLikeVideo()
   const dislikeVideo = useDislikeVideo()
+  const subscribe = useSubscribe()
+  const unsubscribe = useUnsubscribe()
 
   const suggestedVideos = useMemo(
     () => suggestedVideosPages?.pages?.flatMap(page => page.videos) ?? [],
@@ -111,6 +121,53 @@ const WatchPage = () => {
       },
     })
   }, [dislikeVideo, queryClient, videoId])
+
+  const handleUnsubscribe = useCallback(() => {
+    if (!videoDetail) return
+    openConfirmModal({
+      title: 'Unsubscribe',
+      children: `Are you sure you want to unsubscribe from ${videoDetail.channel.name}?`,
+      labels: {
+        cancel: 'Cancel',
+        confirm: 'Unsubscribe',
+      },
+      onConfirm: () => {
+        unsubscribe.mutate(videoDetail.channel.id, {
+          onSuccess: async () => {
+            await queryClient.invalidateQueries([
+              'subscription',
+              'status',
+              videoDetail.channel.id,
+            ])
+          },
+          onError: error => {
+            showNotification({
+              title: 'Error',
+              message: error.message,
+              color: 'red',
+            })
+          },
+        })
+      },
+    })
+  }, [queryClient, unsubscribe, videoDetail])
+
+  const handleSubscribe = useCallback(() => {
+    if (!videoDetail) return
+    if (subscriptionStatus?.status === 'subscribed') return handleUnsubscribe()
+    subscribe.mutate(videoDetail.channel.id, {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(['subscription', 'status', videoDetail.channel.id])
+      },
+      onError: error => {
+        showNotification({
+          title: 'Error',
+          message: error.message,
+          color: 'red',
+        })
+      },
+    })
+  }, [handleUnsubscribe, queryClient, subscribe, subscriptionStatus?.status, videoDetail])
 
   const handleDownloadVideo = useCallback(() => {
     if (!videoDetail) return
@@ -178,7 +235,15 @@ const WatchPage = () => {
                 </Text>
                 <Text>0 subscribers</Text>
               </div>
-              <Button>Subscribe</Button>
+              {videoDetail.channel.userId !== user?.id ? (
+                <Button
+                  loading={subscribe.isLoading}
+                  onClick={handleSubscribe}
+                  variant={subscriptionStatus?.status === 'subscribed' ? 'outline' : 'filled'}
+                >
+                  {subscriptionStatus?.status === 'subscribed' ? 'Subscribed' : 'Subscribe'}
+                </Button>
+              ) : null}
             </Group>
             <Group>
               <Button.Group>
