@@ -1,8 +1,9 @@
-import { Badge, Button, FileInput, Group, Stack, TextInput } from '@mantine/core'
+import { Badge, Button, Group, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useState } from 'react'
 
 import { CustomRichTextEditor } from '@/core/components/custom-rich-text-editor'
+import { UploadFileInput } from '@/core/components/upload-file-input'
 import type { VideoFormData } from '@/features/video/schemas/video'
 import { VideoFormSchema } from '@/features/video/schemas/video'
 
@@ -69,27 +70,21 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           {...form.getInputProps('category')}
         />
         <Group>{renderPopularCategories()}</Group>
-        <FileInput
+        <UploadFileInput
           accept='video/*'
-          clearable
-          label='Video'
+          label='Upload your video'
           onChange={setVideoFile}
-          placeholder='Upload your video'
-          value={videoFile}
-          withAsterisk
+          withAsterick
         />
         <CustomRichTextEditor
           content={form.values.description ?? ''}
           onContentChange={content => form.setFieldValue('description', content)}
           placeholder='Enter your video description'
         />
-        <FileInput
+        <UploadFileInput
           accept='image/*'
-          clearable
-          label='Thumbnail'
+          label='Upload your video thumbnail'
           onChange={setThumbnailFile}
-          placeholder='Upload your thumbnail'
-          value={thumbnailFile}
         />
         <Button disabled={!form.isValid() || !videoFile} loading={isSubmitting} type='submit'>
           Upload video
