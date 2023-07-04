@@ -19,7 +19,7 @@ export const uploadFile = async ({
   userId,
   ...rest
 }: UploadFileParams): Promise<string | undefined> => {
-  const folderByUser = `${folder}/${userId}`
+  const folderByUser = `${userId}/${folder}`
   if (!file) return Promise.resolve(undefined)
   const result = await cloudinary.uploader.upload(file.path, {
     folder: folderByUser,
