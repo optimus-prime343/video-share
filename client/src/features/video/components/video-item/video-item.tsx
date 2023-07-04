@@ -1,8 +1,8 @@
-import { Avatar, createStyles, Stack, Text } from '@mantine/core'
+import { AspectRatio, Avatar, createStyles, Stack, Text } from '@mantine/core'
 import dayjs from 'dayjs'
 import Image from 'next/image'
 import Link from 'next/link'
-import { forwardRef } from 'react'
+import { forwardRef, useState } from 'react'
 
 import { IMAGE_BLUR_DATA_URL } from '@/core/constants/strings'
 import { useCalculateVideoDuration } from '@/core/hooks/use-calculate-video-duration'
@@ -10,12 +10,15 @@ import { formatCount } from '@/core/utils/count'
 import { pluralize } from '@/core/utils/pluralize'
 import type { Video } from '@/features/video/schemas/video'
 
+import { VideoPlayerHover } from './video-player-hover'
+
 export interface VideoItemProps {
   video: Video
 }
 const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => {
   const { video } = props
   const { classes } = useStyles()
+  const [hovered, setHovered] = useState(false)
 
   const duration = useCalculateVideoDuration(video.url)
 
@@ -25,22 +28,29 @@ const VideoItem = forwardRef<HTMLAnchorElement, VideoItemProps>((props, ref) => 
     <Link
       className={classes.videoItem}
       href={{ pathname: '/watch', query: { id: video.id } }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       ref={ref}
     >
-      {video.thumbnail ? (
-        <div className={classes.videoThumbnailContainer}>
-          <Image
-            alt={`${video.title} thumbnail`}
-            blurDataURL={IMAGE_BLUR_DATA_URL}
-            height={200}
-            placeholder='blur'
-            src={video.thumbnail}
-            style={{ objectFit: 'cover', borderRadius: '8px' }}
-            width={350}
-          />
-          <Text className={classes.videoLength}>{duration}</Text>
-        </div>
-      ) : null}
+      <AspectRatio miw={350} ratio={16 / 9}>
+        {hovered ? (
+          <VideoPlayerHover className={classes.hoverVideoPlayer} src={video.url} />
+        ) : null}
+        {!hovered && video.thumbnail ? (
+          <div className={classes.videoThumbnailContainer}>
+            <Image
+              alt={`${video.title} thumbnail`}
+              blurDataURL={IMAGE_BLUR_DATA_URL}
+              height={200}
+              placeholder='blur'
+              src={video.thumbnail}
+              style={{ objectFit: 'cover', borderRadius: '8px' }}
+              width={350}
+            />
+            <Text className={classes.videoLength}>{duration}</Text>
+          </div>
+        ) : null}
+      </AspectRatio>
       <div className={classes.videoItemInfoContainer}>
         <Link href={channelHref} title={video.channel.name}>
           <Avatar
@@ -80,6 +90,7 @@ const useStyles = createStyles(theme => ({
     color: 'inherit',
     display: 'inline-block',
     maxWidth: '350px',
+    overflow: 'hidden',
 
     [theme.fn.smallerThan('md')]: {
       maxWidth: '100%',
@@ -106,6 +117,11 @@ const useStyles = createStyles(theme => ({
   videoChannelLink: {
     textDecoration: 'none',
     color: 'inherit',
+  },
+  hoverVideoPlayer: {
+    borderRadius: '8px',
+    overflow: 'hidden',
+    minHeight: '200px',
   },
 }))
 
