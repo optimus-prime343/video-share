@@ -19,6 +19,9 @@ const configSchema = z.object({
   JWT_REFRESH_TOKEN_SECRET: z.string(),
   JWT_REFRESH_TOKEN_EXPIRES_IN: z.string(),
   HF_ACCESS_TOKEN: z.string(),
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
 })
 
 configSchema.parse(process.env)

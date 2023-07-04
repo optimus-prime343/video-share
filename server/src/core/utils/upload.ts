@@ -1,20 +1,32 @@
-import crypto from 'node:crypto'
 import fs from 'node:fs/promises'
-import path from 'node:path'
 
+import type { UploadApiOptions } from 'cloudinary'
+
+import { cloudinary } from '../lib/cloudinary.js'
 import type { File } from '../schemas/file.js'
 
-export type UploadFileDir = 'thumbnails' | 'avatars' | 'videos'
+export type UploadFolder = 'videos' | 'thumbnails' | 'avatars'
 
-export const uploadFile = async (
-  file: File | undefined,
-  directory: UploadFileDir,
-): Promise<string | undefined> => {
-  if (file === undefined) return Promise.resolve(undefined)
-  const fileExt = path.extname(file.originalname)
-  const fileName = crypto.randomUUID() + fileExt
-  const uploadPathDb = `/${directory}/${fileName}`
-  const uploadPathFull = path.join(process.cwd(), 'public', uploadPathDb)
-  await fs.writeFile(uploadPathFull, file.buffer)
-  return uploadPathDb
+export interface UploadFileParams extends UploadApiOptions {
+  file: File | undefined
+  folder: UploadFolder
+  userId: string
+}
+
+export const uploadFile = async ({
+  file,
+  folder,
+  userId,
+  ...rest
+}: UploadFileParams): Promise<string | undefined> => {
+  const folderByUser = `${folder}/${userId}`
+  if (!file) return Promise.resolve(undefined)
+  const result = await cloudinary.uploader.upload(file.path, {
+    folder: folderByUser,
+    unique_filename: true,
+    overwrite: true,
+    ...rest,
+  })
+  await fs.unlink(file.path) // Delete the file from the server
+  return result.secure_url
 }

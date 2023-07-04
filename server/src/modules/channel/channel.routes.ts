@@ -4,7 +4,7 @@ import multer from 'multer'
 import { AVATAR_IMAGE_FIELD, THUMBNAIL_IMAGE_FIELD } from '../../core/constants/strings.js'
 import { authRequired } from '../../core/middlewares/auth-required.js'
 import { validateResource } from '../../core/middlewares/validate-resource.js'
-import { imageFileFilter } from '../../core/utils/file.js'
+import { imageFileFilter } from '../../core/utils/file-filters.js'
 import { createChannel, getChannelSubscribers, getUserChannel } from './channel.controller.js'
 import { CreateChannelSchema } from './channel.schema.js'
 

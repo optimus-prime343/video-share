@@ -154,9 +154,20 @@ export const createVideo = expressAsyncHandler(async (req, res, next) => {
   const videoFile = files.video[0]
   const thumbnailFile = files.thumbnail?.[0]
 
-  const uploadVideoUrl = await uploadFile(videoFile, 'videos')
-
-  const thumbnail = await uploadFile(thumbnailFile, 'thumbnails')
+  const [uploadVideoUrl, thumbnail] = await Promise.all([
+    uploadFile({
+      file: videoFile,
+      folder: 'videos',
+      userId: user.id,
+      resource_type: 'video',
+    }),
+    uploadFile({
+      file: thumbnailFile,
+      folder: 'thumbnails',
+      userId: user.id,
+      resource_type: 'image',
+    }),
+  ])
 
   const videoCategory = await createVideoCategoryIfNotExists(category)
 
