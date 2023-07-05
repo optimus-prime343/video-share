@@ -1,9 +1,16 @@
 import type { User } from '@prisma/client'
 import expressAsyncHandler from 'express-async-handler'
+import createHttpError from 'http-errors'
+import { StatusCodes } from 'http-status-codes'
 
 import { db } from '../../core/lib/prisma.js'
 import { sendSuccessResponse } from '../../core/utils/response.js'
-import type { CreateCommentRequest, GetCommentsByVideoRequest } from './comment.schema.js'
+import type {
+  CreateCommentRequest,
+  DeleteCommentRequest,
+  GetCommentsByVideoRequest,
+  UpdateCommentRequest,
+} from './comment.schema.js'
 
 export const getCommentsByVideo = expressAsyncHandler(async (req, res, _next) => {
   const {
@@ -75,5 +82,53 @@ export const createComment = expressAsyncHandler(async (req, res, _next) => {
     res,
     message: 'Comment created successfully',
     data: comment,
+  })
+})
+
+export const updateComment = expressAsyncHandler(async (req, res, next) => {
+  const user = res.locals.user as User
+  const { text } = req.body as UpdateCommentRequest['body']
+  const { commentId } = req.params as UpdateCommentRequest['params']
+
+  const comment = await db.comment.findFirst({
+    where: {
+      id: commentId,
+      userId: user.id,
+    },
+  })
+  if (!comment) return next(createHttpError(StatusCodes.NOT_FOUND, 'Comment not found'))
+  const updatedComment = await db.comment.update({
+    where: {
+      id: comment.id,
+    },
+    data: {
+      text,
+    },
+  })
+  sendSuccessResponse({
+    res,
+    message: 'Comment updated successfully',
+    data: updatedComment,
+  })
+})
+
+export const deleteComment = expressAsyncHandler(async (req, res, next) => {
+  const user = res.locals.user as User
+  const { commentId } = req.params as DeleteCommentRequest['params']
+  const comment = await db.comment.findFirst({
+    where: {
+      id: commentId,
+      userId: user.id,
+    },
+  })
+  if (!comment) return next(createHttpError(StatusCodes.NOT_FOUND, 'Comment not found'))
+  await db.comment.delete({
+    where: {
+      id: comment.id,
+    },
+  })
+  sendSuccessResponse({
+    res,
+    message: 'Comment deleted successfully',
   })
 })

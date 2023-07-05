@@ -29,7 +29,7 @@ export const VideoCategorySchema = z.object({
   id: z.string(),
   name: z.string(),
   createdAt: z.date({ coerce: true }),
-  updatedAt: z.date({ coerce: true }),
+  updatedAt: z.date({ coerce: true }).nullable(),
 })
 
 export const VideoFormSchema = z.object({
