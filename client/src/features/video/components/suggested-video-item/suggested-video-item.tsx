@@ -25,10 +25,10 @@ const SuggestedVideoItem_ = forwardRef<HTMLAnchorElement, SuggestedVideoItemProp
           alt={video.title}
           height={100}
           src={video.thumbnail ?? ''}
-          style={{ objectFit: 'cover', borderRadius: '6px', minWidth: 150 }}
+          style={{ objectFit: 'cover', borderRadius: '6px' }}
           width={200}
         />
-        <div>
+        <div className={classes.SuggestedVideoItemInfo}>
           <Title order={6} title={video.title}>
             {video.title}
           </Title>
@@ -52,6 +52,9 @@ const useStyles = createStyles(theme => ({
     color: 'inherit',
     display: 'flex',
     gap: theme.spacing.md,
+  },
+  SuggestedVideoItemInfo: {
+    flex: 1,
   },
   truncate: {
     overflow: 'hidden',
