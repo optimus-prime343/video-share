@@ -4,7 +4,7 @@ const withTM = require('next-transpile-modules')(['@vime/core', '@vime/react'])
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['localhost'],
+    domains: ['localhost', 'res.cloudinary.com'],
   },
 }
 
