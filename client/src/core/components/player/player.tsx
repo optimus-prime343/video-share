@@ -1,24 +1,15 @@
-import type {
-  PlayerProps as VimePlayerProps} from '@vime/react';
-import {
-  DefaultUi,
-  Player as VimePlayer,
-  Video,
-} from '@vime/react'
-import assert from 'assert'
-import type { ReactNode} from 'react';
-import { forwardRef, memo, useMemo } from 'react'
+import type { PlayerProps as VimePlayerProps } from '@vime/react'
+import { DefaultUi, Player as VimePlayer, Video } from '@vime/react'
+import type { ReactNode } from 'react'
+import { forwardRef, memo } from 'react'
 
 export interface PlayerProps extends Partial<VimePlayerProps> {
-  videoId: string
+  src: string
   poster?: string
   children?: ReactNode
 }
 const Player_ = forwardRef<HTMLVmPlayerElement, PlayerProps>((props, ref) => {
-  const { videoId, poster, children, ...rest } = props
-  const apiUrl = process.env.NEXT_PUBLIC_API_REQUEST_URL
-  assert(apiUrl, 'NEXT_PUBLIC_API_REQUEST_URL is not defined')
-  const src = useMemo(() => `${apiUrl}/video/watch/${videoId}`, [apiUrl, videoId])
+  const { src, poster, children, ...rest } = props
 
   return (
     // @ts-expect-error Types of property '"audioTracks"' are incompatible. Only a typescript master can solve this error

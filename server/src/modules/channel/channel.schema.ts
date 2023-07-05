@@ -10,8 +10,8 @@ export const CreateChannelSchema = z.object({
     description: z.string().max(255).optional(),
   }),
   files: z.object({
-    [THUMBNAIL_IMAGE_FIELD]: z.array(FileSchema).optional(),
-    [AVATAR_IMAGE_FIELD]: z.array(FileSchema).optional(),
+    [THUMBNAIL_IMAGE_FIELD]: z.array(FileSchema),
+    [AVATAR_IMAGE_FIELD]: z.array(FileSchema),
   }),
 })
 export const GetChannelSubscribersRequestSchema = z.object({

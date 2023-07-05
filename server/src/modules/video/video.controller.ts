@@ -1,7 +1,3 @@
-import { createReadStream } from 'node:fs'
-import fs from 'node:fs/promises'
-import path from 'node:path'
-
 import type { User, VideoCategory } from '@prisma/client'
 import expressAsyncHandler from 'express-async-handler'
 import createHttpError from 'http-errors'
@@ -18,7 +14,6 @@ import type {
   LikeDislikeVideoQuery,
   UpdateViewCountQuery,
   VideoLikedDislikedStatusQuery,
-  WatchVideoParams,
 } from './video.schema.js'
 
 // check whether the category already exists and create it if it doesn't
@@ -156,13 +151,13 @@ export const createVideo = expressAsyncHandler(async (req, res, next) => {
 
   const [uploadVideoUrl, thumbnail] = await Promise.all([
     uploadFile({
-      file: videoFile,
+      path: videoFile.path,
       folder: 'videos',
       userId: user.id,
       resource_type: 'video',
     }),
     uploadFile({
-      file: thumbnailFile,
+      path: thumbnailFile.path,
       folder: 'thumbnails',
       userId: user.id,
       resource_type: 'image',
@@ -190,33 +185,6 @@ export const createVideo = expressAsyncHandler(async (req, res, next) => {
     message: 'Video uploaded successfully.',
     data: video,
   })
-})
-
-export const watch = expressAsyncHandler(async (req, res, next) => {
-  const { videoId } = req.params as WatchVideoParams
-  const video = await db.video.findUnique({
-    where: {
-      id: videoId,
-    },
-  })
-  if (!video) return next(createHttpError(StatusCodes.NOT_FOUND, 'Video not found'))
-  const videoUrl = path.join(process.cwd(), 'public', video.url)
-  const { size } = await fs.stat(videoUrl)
-  const chunkSize = 10 ** 6
-  const rangeStart = req.headers.range ?? 'bytes=0-'
-  const start = parseInt(rangeStart.replace(/\D/g, ''))
-  const end = Math.min(start + chunkSize, size - 1)
-
-  const contentLength = end - start + 1
-  const headers = {
-    'Content-Range': `bytes ${start}-${end}/${size}`,
-    'Accept-Ranges': 'bytes',
-    'Content-Length': contentLength,
-    'Content-Type': 'video/mp4',
-  }
-  res.writeHead(StatusCodes.PARTIAL_CONTENT, headers)
-  const videoStream = createReadStream(videoUrl, { start, end })
-  videoStream.pipe(res)
 })
 
 export const updateViewCount = expressAsyncHandler(async (req, res, next) => {

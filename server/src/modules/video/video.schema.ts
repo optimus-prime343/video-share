@@ -34,7 +34,7 @@ export const CreateVideoSchema = z.object({
     category: z.string().nonempty(),
   }),
   files: z.object({
-    [THUMBNAIL_IMAGE_FIELD]: z.array(FileSchema.optional()),
+    [THUMBNAIL_IMAGE_FIELD]: z.array(FileSchema),
     [VIDEO_FIELD]: z.array(FileSchema),
   }),
 })

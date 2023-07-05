@@ -71,7 +71,12 @@ export const ChannelForm = (props: ChannelFormProps) => {
           onChange={setAvatar}
           withAsterick
         />
-        <Button loading={isSubmitting} maw='fit-content' type='submit'>
+        <Button
+          disabled={!form.isValid() || !thumbnail || !avatar}
+          loading={isSubmitting}
+          maw='fit-content'
+          type='submit'
+        >
           {mode === 'create' ? 'Create Channel' : 'Edit Channel'}
         </Button>
       </Stack>

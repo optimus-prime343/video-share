@@ -26,7 +26,6 @@
     "@huggingface/inference": "^2.5.2",
     "@prisma/client": "^4.14.0",
     "argon2": "^0.30.3",
-    "canvas": "^2.11.2",
     "cloudinary": "^1.37.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

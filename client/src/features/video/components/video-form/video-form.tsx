@@ -86,7 +86,11 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           label='Upload your video thumbnail'
           onChange={setThumbnailFile}
         />
-        <Button disabled={!form.isValid() || !videoFile} loading={isSubmitting} type='submit'>
+        <Button
+          disabled={!form.isValid() || !videoFile || !thumbnailFile}
+          loading={isSubmitting}
+          type='submit'
+        >
           Upload video
         </Button>
       </Stack>

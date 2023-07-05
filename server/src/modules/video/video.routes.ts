@@ -16,7 +16,6 @@ import {
   getVideos,
   likeVideo,
   updateViewCount,
-  watch,
 } from './video.controller.js'
 import {
   CreateVideoSchema,
@@ -29,8 +28,6 @@ import {
 } from './video.schema.js'
 
 const videoRouter = Router()
-
-videoRouter.get('/watch/:videoId', watch)
 
 videoRouter.get('/categories', getVideoCategories)
 videoRouter.get(

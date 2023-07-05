@@ -242,7 +242,7 @@ const WatchPage = () => {
             currentTime={sharedTimeStamp}
             poster={videoDetail.thumbnail}
             ref={playerRef}
-            videoId={videoId}
+            src={videoDetail.url}
           />
           <Group position='apart'>
             <Title order={3}>{videoDetail.title}</Title>
