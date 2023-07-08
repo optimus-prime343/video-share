@@ -44,6 +44,14 @@ export const LoggedInMenu = () => {
         <Avatar alt={`${user.username} profile`} radius='xl' src={user.image} />
       </Menu.Target>
       <Menu.Dropdown>
+        {user.role === 'ADMIN' ? (
+          <>
+            <Menu.Label>Admin</Menu.Label>
+            <Menu.Item component={Link} href='/admin'>
+              Dashboard
+            </Menu.Item>
+          </>
+        ) : null}
         <Menu.Label>Profile</Menu.Label>
         <Menu.Item component={Link} href='/channel/my-channel' icon={<IconCast />}>
           My channel

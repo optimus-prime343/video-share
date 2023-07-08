@@ -9,6 +9,7 @@ import { StatusCodes } from 'http-status-codes'
 import morgan from 'morgan'
 
 import { sendErrorResponse } from './core/utils/response.js'
+import { adminRouter } from './modules/admin/admin.routes.js'
 import { authRouter } from './modules/auth/auth.routes.js'
 import { channelRouter } from './modules/channel/channel.routes.js'
 import { commentRouter } from './modules/comment/comment.routes.js'
@@ -38,6 +39,7 @@ app.use('/api/v1/channel', channelRouter)
 app.use('/api/v1/video', videoRouter)
 app.use('/api/v1/comment', commentRouter)
 app.use('/api/v1/subscription', subscriptionRouter)
+app.use('/api/v1/admin', adminRouter)
 
 // 404 error handler
 app.use('*', (req, res) => {

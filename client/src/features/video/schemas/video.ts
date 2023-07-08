@@ -2,6 +2,8 @@ import { z } from 'zod'
 
 import { ChannelSchema } from '@/features/channel/schemas/channel'
 
+export const VideoStatus = z.enum(['PENDING', 'APPROVED', 'REJECTED'])
+
 export const VideoCategory = z.object({
   id: z.string(),
   name: z.string(),
@@ -17,7 +19,7 @@ export const VideoSchema = z.object({
   views: z.number(),
   likes: z.number(),
   dislikes: z.number(),
-  status: z.enum(['PENDING', 'APPROVED', 'REJECTED']),
+  status: VideoStatus,
   channel: ChannelSchema,
   category: VideoCategory,
   createdAt: z.date({ coerce: true }),
@@ -40,3 +42,4 @@ export const VideoFormSchema = z.object({
 export type Video = z.infer<typeof VideoSchema>
 export type VideoCategory = z.infer<typeof VideoCategorySchema>
 export type VideoFormData = z.infer<typeof VideoFormSchema>
+export type VideoStatus = z.infer<typeof VideoStatus>
