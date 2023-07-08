@@ -17,7 +17,8 @@ import { Navbar } from '@/core/components/layouts/navbar'
 import { COLOR_SCHEME_COOKIE } from '@/core/constants/strings'
 import { AuthModal } from '@/features/auth/components/auth-modal'
 
-dayjs.extend(LocalizedFormat, RelativeTime)
+dayjs.extend(LocalizedFormat)
+dayjs.extend(RelativeTime)
 
 const roboto = Roboto({
   subsets: ['latin-ext'],
