@@ -40,7 +40,7 @@ import { useComments } from '@/features/comment/hooks/use-comments'
 import { useCheckSubscriptionStatus } from '@/features/subscription/hooks/use-check-subscription-status'
 import { useSubscribe } from '@/features/subscription/hooks/use-subscribe'
 import { useUnsubscribe } from '@/features/subscription/hooks/use-unsubscribe'
-import { SuggestedVideoItem } from '@/features/video/components/suggested-video-item'
+import { VideoItem } from '@/features/video/components/video-item'
 import { useDislikeVideo } from '@/features/video/hooks/use-dislike-video'
 import { useLikeVideo } from '@/features/video/hooks/use-like-video'
 import { useSuggestedVideos } from '@/features/video/hooks/use-suggested-videos'
@@ -342,7 +342,7 @@ const WatchPage = () => {
           <Stack spacing='lg'>
             <Title order={4}>Suggested Videos</Title>
             {suggestedVideos.map(suggestedVideo => (
-              <SuggestedVideoItem key={suggestedVideo.id} video={suggestedVideo} />
+              <VideoItem display='row' key={suggestedVideo.id} video={suggestedVideo} />
             ))}
           </Stack>
         </InfiniteScroll>

@@ -4,7 +4,7 @@ import React from 'react'
 interface VideoPlayerHoverProps extends ComponentProps<'video'> {
   src: string
 }
-export const VideoPlayerHover = ({ src, ...rest }: VideoPlayerHoverProps) => {
+export const HoverVideoPlayer = ({ src, ...rest }: VideoPlayerHoverProps) => {
   return (
     <video autoPlay controls height={300} muted {...rest}>
       <source src={src} />
