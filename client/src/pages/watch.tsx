@@ -340,7 +340,6 @@ const WatchPage = () => {
           onLoadMore={() => fetchNextSuggestedVideosPage()}
         >
           <Stack spacing='lg'>
-            <Title order={4}>Suggested Videos</Title>
             {suggestedVideos.map(suggestedVideo => (
               <VideoItem display='row' key={suggestedVideo.id} video={suggestedVideo} />
             ))}
