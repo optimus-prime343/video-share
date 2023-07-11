@@ -22,7 +22,7 @@ export const VideoItem = ({ video, display = 'column' }: ExperimentalVideoItemPr
       onMouseLeave={() => setShowPlayer(false)}
     >
       <VideoItemThumbnail
-        showControls={display === 'column'}
+        controls={display === 'column'}
         showPlayerOnHover={showPlayer}
         video={video}
       />

@@ -1,12 +1,12 @@
 import { AspectRatio, createStyles, Text } from '@mantine/core'
 import Image from 'next/image'
+import type { ComponentPropsWithoutRef } from 'react'
 
 import { useCalculateVideoDuration } from '@/core/hooks/use-calculate-video-duration'
 
 import type { Video } from '../../schemas/video'
-import { HoverVideoPlayer } from '../hover-video-player/hover-video-player'
 
-export interface VideoItemThumbnailProps {
+export interface VideoItemThumbnailProps extends ComponentPropsWithoutRef<'video'> {
   video: Video
   showPlayerOnHover?: boolean
   showControls?: boolean
@@ -14,7 +14,7 @@ export interface VideoItemThumbnailProps {
 export const VideoItemThumbnail = ({
   video,
   showPlayerOnHover,
-  showControls,
+  ...rest
 }: VideoItemThumbnailProps) => {
   const duration = useCalculateVideoDuration(video.url)
   const { classes } = useStyles()
@@ -22,7 +22,10 @@ export const VideoItemThumbnail = ({
   return (
     <AspectRatio className={classes.thumbnail} mah={200} miw={150} ratio={16 / 9}>
       {showPlayerOnHover ? (
-        <HoverVideoPlayer controls={showControls} src={video.url} />
+        <video autoPlay controls height={300} muted {...rest}>
+          <source src={video.url} />
+          Your browser does not support the video tag.
+        </video>
       ) : (
         <div className={classes.imageContainer}>
           <Image alt={video.title} fill src={video.thumbnail} style={{ objectFit: 'cover' }} />
