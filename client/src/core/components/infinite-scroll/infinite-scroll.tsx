@@ -1,82 +1,45 @@
 import { Loader, Stack } from '@mantine/core'
-import type {
-  ComponentPropsWithoutRef,
-  ComponentPropsWithRef,
-  ElementType,
-  ReactNode} from 'react';
-import {
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react'
+import { type ReactNode, useEffect, useRef } from 'react'
 
-interface Props<T, E extends ElementType, W extends ElementType> {
-  items: T[]
-  renderItem: (item: T, index: number) => ReactNode
-  as?: E
-  wrapperAs?: W
-  hasNextPage?: boolean
-  isFetchingNextPage?: boolean
-  fetchNextPage?: () => Promise<unknown>
-  loading?: ReactNode
-  wrapperProps?: ComponentPropsWithoutRef<W>
+export interface InfiniteScrollProps<T> {
+  children: ReactNode
+  hasMore: boolean | undefined
+  isLoadingMore: boolean | undefined
+  threshold?: number
+  onLoadMore: () => T | Promise<T>
 }
-export type InfiniteScrollProps<T, E extends ElementType, W extends ElementType> = Props<
-  T,
-  E,
-  W
-> &
-  Omit<ComponentPropsWithRef<E>, keyof Props<T, E, W> | 'children'>
-
-export const InfiniteScroll = <T, E extends ElementType, W extends ElementType>({
-  items,
-  renderItem,
-  as,
-  wrapperAs,
-  hasNextPage,
-  isFetchingNextPage,
-  fetchNextPage,
-  loading,
-  wrapperProps,
-  ...rest
-}: InfiniteScrollProps<T, E, W>) => {
-  const Component = as ?? 'div'
-
-  const lastItemRef = useRef<HTMLDivElement | null>(null)
-
-  const renderItems = useCallback(() => {
-    const Wrapper = wrapperAs ?? 'div'
-    return items.map((item, index) => (
-      <Wrapper
-        key={index.toString()}
-        ref={index === items.length - 1 ? lastItemRef : null}
-        {...wrapperProps}
-      >
-        {renderItem(item, index)}
-      </Wrapper>
-    ))
-  }, [items, renderItem, wrapperAs, wrapperProps])
+export const InfiniteScroll = <T = void,>({
+  children,
+  hasMore,
+  isLoadingMore,
+  threshold = 300,
+  onLoadMore,
+}: InfiniteScrollProps<T>) => {
+  const ref = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    const { current: lastItem } = lastItemRef
-    if (!lastItem) return
     const observer = new IntersectionObserver(entries => {
       for (const entry of entries) {
-        if (entry.isIntersecting) {
-          if (hasNextPage && !isFetchingNextPage) {
-            if (fetchNextPage) fetchNextPage()
-          }
+        if (entry.isIntersecting && !isLoadingMore && hasMore) {
+          onLoadMore()
         }
       }
     })
-    observer.observe(lastItem)
+    if (ref.current) observer.observe(ref.current)
     return () => observer.disconnect()
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+  }, [hasMore, isLoadingMore, onLoadMore])
 
   return (
     <Stack>
-      <Component {...rest}>{renderItems()}</Component>
-      {isFetchingNextPage ? loading ?? <Loader /> : null}
+      {children}
+      <div
+        ref={ref}
+        style={{
+          height: threshold,
+          display: isLoadingMore || !hasMore ? 'none' : 'block',
+        }}
+      />
+      {isLoadingMore ? <Loader /> : null}
     </Stack>
   )
 }

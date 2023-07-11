@@ -34,19 +34,18 @@ const HomePage = () => {
         <VideosSkeleton />
       ) : (
         <InfiniteScroll
-          align='flex-start'
-          as={Grid}
-          fetchNextPage={fetchNextVideosPage}
-          gutter='lg'
-          hasNextPage={hasNextVideosPage}
-          isFetchingNextPage={isFetchingNextVideosPage}
-          items={videos}
-          renderItem={video => <VideoItem video={video} />}
-          wrapperAs={Grid.Col}
-          wrapperProps={{
-            span: 3,
-          }}
-        />
+          hasMore={hasNextVideosPage}
+          isLoadingMore={isFetchingNextVideosPage}
+          onLoadMore={() => fetchNextVideosPage()}
+        >
+          <Grid>
+            {videos.map(video => (
+              <Grid.Col key={video.id} span={3}>
+                <VideoItem video={video} />
+              </Grid.Col>
+            ))}
+          </Grid>
+        </InfiniteScroll>
       )}
     </Stack>
   )

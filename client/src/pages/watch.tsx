@@ -323,23 +323,29 @@ const WatchPage = () => {
             {pluralize('Comment', commentsPages?.pages.at(0)?.count ?? 0)}
           </Title>
           <InfiniteScroll
-            as={Stack}
-            fetchNextPage={fetchNextCommentsPage}
-            hasNextPage={hasCommentsNextPage}
-            isFetchingNextPage={isFetchingCommentsNextPage}
-            items={comments}
-            renderItem={comment => <CommentItem comment={comment} />}
-            spacing='xl'
-          />
+            hasMore={hasCommentsNextPage}
+            isLoadingMore={isFetchingCommentsNextPage}
+            onLoadMore={() => fetchNextCommentsPage()}
+          >
+            <Stack spacing='lg'>
+              {comments.map(comment => (
+                <CommentItem comment={comment} key={comment.id} />
+              ))}
+            </Stack>
+          </InfiniteScroll>
         </Stack>
         <InfiniteScroll
-          as={Stack}
-          fetchNextPage={fetchNextSuggestedVideosPage}
-          hasNextPage={hasSuggestedVideosNextPage}
-          isFetchingNextPage={isFetchingSuggestedVideosNextPage}
-          items={suggestedVideos}
-          renderItem={video => <SuggestedVideoItem video={video} />}
-        />
+          hasMore={hasSuggestedVideosNextPage}
+          isLoadingMore={isFetchingSuggestedVideosNextPage}
+          onLoadMore={() => fetchNextSuggestedVideosPage()}
+        >
+          <Stack spacing='lg'>
+            <Title order={4}>Suggested Videos</Title>
+            {suggestedVideos.map(suggestedVideo => (
+              <SuggestedVideoItem key={suggestedVideo.id} video={suggestedVideo} />
+            ))}
+          </Stack>
+        </InfiniteScroll>
       </div>
     </div>
   )
