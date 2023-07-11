@@ -47,7 +47,7 @@ export const LoggedInMenu = () => {
         {user.role === 'ADMIN' ? (
           <>
             <Menu.Label>Admin</Menu.Label>
-            <Menu.Item component={Link} href='/admin'>
+            <Menu.Item component={Link} href='/admin/dashboard'>
               Dashboard
             </Menu.Item>
           </>

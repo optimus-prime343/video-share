@@ -50,6 +50,7 @@ export const AdminSideBar = ({ children }: AdminSideBarProps) => {
 const useStyles = createStyles(theme => ({
   container: {
     display: 'flex',
+    alignItems: 'flex-start',
     gap: theme.spacing.md,
     padding: theme.spacing.md,
   },
