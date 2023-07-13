@@ -1,6 +1,6 @@
 import { Button, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { CustomRichTextEditor } from '@/core/components/custom-rich-text-editor'
 import { UploadFileInput } from '@/core/components/upload-file-input'
@@ -33,6 +33,11 @@ export const ChannelForm = (props: ChannelFormProps) => {
     },
     validate: zodResolver(ChannelFormSchema),
   })
+  const isSubmitButtonDisabled = useMemo<boolean>(() => {
+    if (props.mode === 'edit') return !form.isDirty() || !form.isValid()
+    return !form.isValid() || !thumbnail || !avatar
+  }, [avatar, form, props.mode, thumbnail])
+
   const handleSubmit = useCallback(
     (data: ChannelFormData) => {
       const { name, description } = data
@@ -72,7 +77,7 @@ export const ChannelForm = (props: ChannelFormProps) => {
           withAsterick
         />
         <Button
-          disabled={!form.isValid() || !thumbnail || !avatar}
+          disabled={isSubmitButtonDisabled}
           loading={isSubmitting}
           maw='fit-content'
           type='submit'

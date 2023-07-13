@@ -14,6 +14,14 @@ export const CreateChannelSchema = z.object({
     [AVATAR_IMAGE_FIELD]: z.array(FileSchema),
   }),
 })
+export const UpdateChannelSchema = CreateChannelSchema.extend({
+  body: CreateChannelSchema.shape.body.partial(),
+  params: z.object({
+    id: z.string().uuid(),
+  }),
+  files: CreateChannelSchema.shape.files.partial(),
+})
+
 export const GetChannelSubscribersRequestSchema = z.object({
   params: z.object({
     channelId: z.string().uuid(),
@@ -22,3 +30,4 @@ export const GetChannelSubscribersRequestSchema = z.object({
 
 export type CreateChannelRequest = z.infer<typeof CreateChannelSchema>
 export type GetChannelSubscribersRequest = z.infer<typeof GetChannelSubscribersRequestSchema>
+export type UpdateChannelRequest = z.infer<typeof UpdateChannelSchema>
