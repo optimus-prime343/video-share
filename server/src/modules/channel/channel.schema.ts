@@ -22,12 +22,19 @@ export const UpdateChannelSchema = CreateChannelSchema.extend({
   files: CreateChannelSchema.shape.files.partial(),
 })
 
-export const GetChannelSubscribersRequestSchema = z.object({
+export const ChannelIdAsParamRequestSchema = z.object({
   params: z.object({
-    channelId: z.string().uuid(),
+    id: z.string().uuid(),
+  }),
+})
+export const GetChannelVideosSchema = ChannelIdAsParamRequestSchema.extend({
+  query: z.object({
+    page: z.number({ coerce: true }).default(1),
+    perPage: z.number({ coerce: true }).default(10),
   }),
 })
 
 export type CreateChannelRequest = z.infer<typeof CreateChannelSchema>
-export type GetChannelSubscribersRequest = z.infer<typeof GetChannelSubscribersRequestSchema>
 export type UpdateChannelRequest = z.infer<typeof UpdateChannelSchema>
+export type ChannelIdAsParamRequest = z.infer<typeof ChannelIdAsParamRequestSchema>
+export type GetChannelVideosRequest = z.infer<typeof GetChannelVideosSchema>

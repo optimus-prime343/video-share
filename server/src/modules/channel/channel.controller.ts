@@ -7,8 +7,9 @@ import { db } from '../../core/lib/prisma.js'
 import { sendSuccessResponse } from '../../core/utils/response.js'
 import { uploadFile } from '../../core/utils/upload.js'
 import type {
+  ChannelIdAsParamRequest,
   CreateChannelRequest,
-  GetChannelSubscribersRequest,
+  GetChannelVideosRequest,
   UpdateChannelRequest,
 } from './channel.schema.js'
 
@@ -116,16 +117,91 @@ export const getUserChannel = expressAsyncHandler(async (_req, res, _next) => {
 })
 
 export const getChannelSubscribers = expressAsyncHandler(async (req, res) => {
-  const { channelId } = req.params as GetChannelSubscribersRequest['params']
+  const { id } = req.params as ChannelIdAsParamRequest['params']
   const subscribers = await db.subscription.count({
     where: {
-      channelId,
+      id,
     },
   })
   sendSuccessResponse({
     res,
     data: {
       subscribers,
+    },
+  })
+})
+export const getChannelDetails = expressAsyncHandler(async (req, res, next) => {
+  const { id } = req.params as ChannelIdAsParamRequest['params']
+  const channel = await db.channel.findUnique({
+    where: {
+      id,
+    },
+  })
+  if (!channel) return next(createHttpError(StatusCodes.NOT_FOUND, 'Channel not found'))
+  const totalSubscribers = await db.subscription.count({
+    where: {
+      channelId: id,
+    },
+  })
+  const totalViews = await db.video.aggregate({
+    where: {
+      channelId: id,
+    },
+    _sum: {
+      views: true,
+    },
+  })
+  const channelDetails = {
+    ...channel,
+    totalSubscribers,
+    totalViews: totalViews._sum?.views ?? 0,
+  }
+  sendSuccessResponse({
+    res,
+    message: 'Channel details fetched successfully',
+    data: channelDetails,
+  })
+})
+
+export const getChannelVideos = expressAsyncHandler(async (req, res, next) => {
+  const {
+    params: { id },
+    query: { perPage, page },
+  } = req as unknown as GetChannelVideosRequest
+  const channel = await db.channel.findUnique({
+    where: {
+      id,
+    },
+  })
+  if (!channel) return next(createHttpError(StatusCodes.NOT_FOUND, 'Channel not found'))
+  const videosCount = await db.video.count({
+    where: {
+      channelId: id,
+    },
+  })
+  const totalPages = Math.ceil(videosCount / perPage)
+  const nextPage = page < totalPages ? page + 1 : null
+  const prevPage = page > 1 ? page - 1 : null
+  const skip = (page - 1) * perPage
+  const videos = await db.video.findMany({
+    where: {
+      channelId: id,
+    },
+    include: {
+      channel: true,
+      category: true,
+    },
+    skip,
+    take: perPage,
+  })
+  sendSuccessResponse({
+    res,
+    message: 'Channel videos fetched successfully',
+    data: {
+      videos,
+      nextPage,
+      prevPage,
+      totalPages,
     },
   })
 })

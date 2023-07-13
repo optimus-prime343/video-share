@@ -16,4 +16,8 @@ export const ChannelFormSchema = z.object({
 })
 
 export type Channel = z.infer<typeof ChannelSchema>
+export type ChannelDetail = Channel & {
+  totalSubscribers: number
+  totalViews: number
+}
 export type ChannelFormData = z.infer<typeof ChannelFormSchema>

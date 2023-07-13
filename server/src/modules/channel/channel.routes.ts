@@ -8,19 +8,32 @@ import { imageFileFilter } from '../../core/utils/file-filters.js'
 import { fileDiskStorage } from '../../core/utils/file-storage.js'
 import {
   createChannel,
+  getChannelDetails,
   getChannelSubscribers,
+  getChannelVideos,
   getUserChannel,
   updateChannel,
 } from './channel.controller.js'
-import { CreateChannelSchema, UpdateChannelSchema } from './channel.schema.js'
+import {
+  ChannelIdAsParamRequestSchema,
+  CreateChannelSchema,
+  GetChannelVideosSchema,
+  UpdateChannelSchema,
+} from './channel.schema.js'
 
 const channelRouter = Router()
 
-channelRouter.get('/subscribers/:channelId', getChannelSubscribers)
+channelRouter.get(
+  '/subscribers/:id',
+  validateResource(ChannelIdAsParamRequestSchema),
+  getChannelSubscribers,
+)
+channelRouter.get('/videos/:id', validateResource(GetChannelVideosSchema), getChannelVideos)
 
 channelRouter.use(authRequired)
 
 channelRouter.get('/get-user-channel', getUserChannel)
+channelRouter.get('/:id', getChannelDetails)
 channelRouter.post(
   '/',
   multer({ storage: fileDiskStorage, fileFilter: imageFileFilter }).fields([
