@@ -40,6 +40,7 @@ import { useComments } from '@/features/comment/hooks/use-comments'
 import { useCheckSubscriptionStatus } from '@/features/subscription/hooks/use-check-subscription-status'
 import { useSubscribe } from '@/features/subscription/hooks/use-subscribe'
 import { useUnsubscribe } from '@/features/subscription/hooks/use-unsubscribe'
+import { VideoDetailSkeleton } from '@/features/video/components/video-detail-skeleton'
 import { VideoItem } from '@/features/video/components/video-item'
 import { useDislikeVideo } from '@/features/video/hooks/use-dislike-video'
 import { useLikeVideo } from '@/features/video/hooks/use-like-video'
@@ -56,7 +57,7 @@ const WatchPage = () => {
   const playerRef = useRef<HTMLVmPlayerElement | null>(null)
   const videoId = useMemo(() => router.query?.id as string | undefined, [router.query?.id])
 
-  const { data: videoDetail } = useVideoDetail(videoId)
+  const { data: videoDetail, isLoading: isVideoDetailLoading } = useVideoDetail(videoId)
   const {
     data: suggestedVideosPages,
     hasNextPage: hasSuggestedVideosNextPage,
@@ -232,7 +233,8 @@ const WatchPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId])
 
-  if (!videoDetail || !videoId) return <p>Video not found</p> //TODO UPDATE UI
+  if (isVideoDetailLoading) return <VideoDetailSkeleton />
+  if (!videoDetail) return <p>Video not found</p> //TODO UPDATE UI
 
   return (
     <div className={classes.container}>
