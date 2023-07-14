@@ -40,6 +40,17 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
     [form]
   )
 
+  const handleVideoFileChange = useCallback(
+    (file: File | null) => {
+      setVideoFile(file)
+      if (file) {
+        const [name, _extension] = file.name.split('.')
+        form.setFieldValue('title', name)
+      }
+    },
+    [form]
+  )
+
   const handleSubmit = useCallback(
     (data: VideoFormData) => {
       const { title, description, category } = data
@@ -73,7 +84,7 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
         <UploadFileInput
           accept='video/*'
           label='Upload your video'
-          onChange={setVideoFile}
+          onChange={handleVideoFileChange}
           withAsterick
         />
         <CustomRichTextEditor

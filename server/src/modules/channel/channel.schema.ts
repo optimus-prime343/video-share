@@ -7,7 +7,7 @@ import { FileSchema } from '../../core/schemas/file.js'
 export const CreateChannelSchema = z.object({
   body: z.object({
     name: z.string().min(3).max(255),
-    description: z.string().max(255).optional(),
+    description: z.string().optional(),
   }),
   files: z.object({
     [THUMBNAIL_IMAGE_FIELD]: z.array(FileSchema),
