@@ -1,7 +1,8 @@
-import { Avatar, createStyles, Group, Text, Title } from '@mantine/core'
+import { Avatar, createStyles, Group, Text, Title, UnstyledButton } from '@mantine/core'
 import dayjs from 'dayjs'
-import Link from 'next/link'
-import React from 'react'
+import { useRouter } from 'next/router'
+import type { MouseEvent } from 'react'
+import React, { useCallback } from 'react'
 
 import { DOT } from '@/core/constants/strings'
 import { formatCount } from '@/core/utils/count'
@@ -15,22 +16,29 @@ export interface VideoItemInfoProps {
 }
 export const VideoItemInfo = ({ video, showAvatar = true }: VideoItemInfoProps) => {
   const { classes } = useStyles()
+  const router = useRouter()
+
+  const navigateToChannelPage = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault()
+      router.push(`/channel/${video.channel.id}`)
+    },
+    [router, video.channel.id]
+  )
   return (
     <Group align='flex-start' noWrap>
       {showAvatar ? (
-        <Link href={`/channel/${video.channel.id}`}>
+        <UnstyledButton onClick={navigateToChannelPage}>
           <Avatar alt={video.channel.name} radius='xl' src={video.channel.avatar} />
-        </Link>
+        </UnstyledButton>
       ) : null}
       <div>
         <Title className={classes.title} order={5} title={video.title}>
           {video.title}
         </Title>
-        <Link className={classes.link} href={`/channel/${video.channel.id}`}>
-          <Text my={4} title={video.channel.name}>
-            {video.channel.name}
-          </Text>
-        </Link>
+        <UnstyledButton onClick={navigateToChannelPage}>
+          <Text my={4}>{video.channel.name}</Text>
+        </UnstyledButton>
         <Text color='dimmed' size='sm'>
           {formatCount(video.views)} {pluralize('View', video.views)} {DOT}{' '}
           {dayjs(video.createdAt).fromNow()}{' '}
