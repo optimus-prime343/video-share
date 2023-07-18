@@ -43,6 +43,7 @@ model User {
   likedVideos        LikedVideo[]
   dislikedVideos     DislikedVideo[]
   subscriptions      Subscription[]
+  histories          History[]
 }
 
 model VerificationToken {
@@ -115,6 +116,18 @@ model Video {
   updatedAt      DateTime?           @updatedAt @map("updated_at")
   likedVideos    LikedVideo[]
   dislikedVideos DislikedVideo[]
+  histories      History[]
+}
+
+model History {
+  id        String    @id @default(uuid())
+  video     Video     @relation(fields: [videoId], references: [id])
+  videoId   String    @map("video_id")
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @map("user_id")
+  timestamp Int       @default(0) @map("timestamp")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 }
 
 model LikedVideo {

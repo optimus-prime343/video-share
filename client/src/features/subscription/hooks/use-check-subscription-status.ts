@@ -23,6 +23,6 @@ export const useCheckSubscriptionStatus = (channelId: string | undefined) => {
         .GET(CheckSubscriptionsStatusResponseSchema, `/subscription/status/${channelId}`)
         .then(data => data.data)
         .catch(parseAndThrowErrorResponse),
-    enabled: !!channelId,
+    enabled: !!(channelId && user?.id),
   })
 }

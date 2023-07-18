@@ -37,6 +37,7 @@ import { useSubscribersCount } from '@/features/channel/hooks/use-subscribers-co
 import { CommentForm } from '@/features/comment/components/comment-form/comment-form'
 import { CommentItem } from '@/features/comment/components/comment-item'
 import { useComments } from '@/features/comment/hooks/use-comments'
+import { useCreateHistory } from '@/features/history/hooks/use-create-history'
 import { useCheckSubscriptionStatus } from '@/features/subscription/hooks/use-check-subscription-status'
 import { useSubscribe } from '@/features/subscription/hooks/use-subscribe'
 import { useUnsubscribe } from '@/features/subscription/hooks/use-unsubscribe'
@@ -83,6 +84,7 @@ const WatchPage = () => {
   const dislikeVideo = useDislikeVideo()
   const subscribe = useSubscribe()
   const unsubscribe = useUnsubscribe()
+  const createHistory = useCreateHistory()
 
   const suggestedVideos = useMemo(
     () => suggestedVideosPages?.pages?.flatMap(page => page.videos) ?? [],
@@ -232,6 +234,25 @@ const WatchPage = () => {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId])
+
+  useEffect(() => {
+    if (!videoId) return
+    if (!user) return
+    const onRouteChangeStart = () =>
+      createHistory.mutate(
+        { videoId, timestamp: playerRef.current?.currentTime ?? 0 },
+        {
+          onSuccess: ({ data }) => {
+            console.log('History created', data)
+          },
+        }
+      )
+
+    router.events.on('routeChangeStart', onRouteChangeStart)
+    return () => {
+      router.events.off('routeChangeStart', onRouteChangeStart)
+    }
+  }, [createHistory, router.events, videoId])
 
   if (isVideoDetailLoading) return <VideoDetailSkeleton />
   if (!videoDetail) return <p>Video not found</p> //TODO UPDATE UI
