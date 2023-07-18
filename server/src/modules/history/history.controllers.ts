@@ -20,11 +20,14 @@ export const read = expressAsyncHandler(async (req, res) => {
   const nextPage = page < totalPages ? page + 1 : null
   const prevPage = page > 1 ? page - 1 : null
   const history = await db.history.findMany({
-    where: {
-      userId: user.id,
-    },
+    where: { userId: user.id },
     skip,
     take: perPage,
+    include: {
+      video: {
+        include: { channel: true, category: true },
+      },
+    },
   })
   sendSuccessResponse({
     res,
