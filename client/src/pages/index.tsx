@@ -1,8 +1,9 @@
 import { Grid, Stack } from '@mantine/core'
 import { useRouter } from 'next/router'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { InfiniteScroll } from '@/core/components/infinite-scroll'
+import { useAuthModalOpen } from '@/features/auth/store/use-auth-modal-store'
 import { VideoCategoryList } from '@/features/video/components/video-category-list/video-category-list'
 import { VideoItem } from '@/features/video/components/video-item'
 import { VideosSkeleton } from '@/features/video/components/videos-skeleton'
@@ -13,6 +14,7 @@ const HomePage = () => {
   const router = useRouter()
   const category = router.query?.category as string | undefined
   const search = router.query?.search as string | undefined
+  const openAuthModal = useAuthModalOpen()
 
   const {
     data: videoPages,
@@ -27,6 +29,12 @@ const HomePage = () => {
     () => videoPages?.pages.flatMap(page => page.videos) ?? [],
     [videoPages]
   )
+
+  useEffect(() => {
+    const isVerificationSuccess = router.query['verification-success'] === 'true'
+    if (isVerificationSuccess) openAuthModal()
+  }, [openAuthModal, router.query])
+
   return (
     <Stack px='md' py='sm'>
       <VideoCategoryList categories={videoCategories ?? []} />

@@ -6,6 +6,7 @@ export interface AuthModalStore {
   close: () => void
   toggle: () => void
 }
+
 export const useAuthModalStore = create<AuthModalStore>((set, get) => ({
   opened: false,
   open: () => set({ ...get(), opened: true }),

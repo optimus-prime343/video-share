@@ -113,10 +113,9 @@ const verifyAccount = expressAsyncHandler(async (req, res, next) => {
     where: { id: verificationToken.id },
   })
 
-  sendSuccessResponse({
-    res,
-    message: 'Your account has been verified successfully.',
-  })
+  const url = new URL(process.env.FRONTEND_URL)
+  url.searchParams.append('verification-success', 'true')
+  res.redirect(url.toString())
 })
 const login = expressAsyncHandler(async (req, res, next) => {
   const { email, password } = req.body as LoginPayload

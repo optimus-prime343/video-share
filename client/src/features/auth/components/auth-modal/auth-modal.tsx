@@ -2,6 +2,7 @@ import { Modal, Tabs } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { IconUser } from '@tabler/icons-react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
 import { LoginForm } from '@/features/auth/components/login-form'
@@ -20,6 +21,7 @@ const LOGIN_TAB_VALUE = 'login'
 const SIGN_UP_TAB_VALUE = 'sign-up'
 
 export const AuthModal = () => {
+  const router = useRouter()
   const queryClient = useQueryClient()
   const [activeTab, setActiveTab] = useState<string | null>(LOGIN_TAB_VALUE)
 
@@ -33,6 +35,7 @@ export const AuthModal = () => {
       login.mutate(data, {
         onSuccess: async () => {
           await queryClient.invalidateQueries(USER_QUERY_KEY)
+          await router.replace(router.asPath.split('?')[0])
           closeAuthModal()
         },
         onError: error => {
@@ -44,7 +47,7 @@ export const AuthModal = () => {
         },
       })
     },
-    [closeAuthModal, login, queryClient]
+    [closeAuthModal, login, queryClient, router]
   )
   const onSignUpFormSubmit = useCallback(
     (data: SignupFormData) => {

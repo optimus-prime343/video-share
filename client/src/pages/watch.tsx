@@ -252,7 +252,7 @@ const WatchPage = () => {
     return () => {
       router.events.off('routeChangeStart', onRouteChangeStart)
     }
-  }, [createHistory, router.events, videoId])
+  }, [createHistory, router.events, user, videoId])
 
   if (isVideoDetailLoading) return <VideoDetailSkeleton />
   if (!videoDetail) return <p>Video not found</p> //TODO UPDATE UI
