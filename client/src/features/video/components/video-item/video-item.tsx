@@ -1,4 +1,5 @@
 import { createStyles } from '@mantine/core'
+import type { Url } from 'next/dist/shared/lib/router/router'
 import Link from 'next/link'
 import React, { useState } from 'react'
 
@@ -9,21 +10,32 @@ import { VideoItemThumbnail } from '../video-item-thumbnail'
 export interface VideoItemProps {
   video: Video
   display?: 'row' | 'column'
+  thumbnailMinWidth?: number
+  thumbnailMaxHeight?: number
+  href?: Url
 }
-export const VideoItem = ({ video, display = 'column' }: VideoItemProps) => {
+export const VideoItem = ({
+  video,
+  href,
+  display = 'column',
+  thumbnailMinWidth = 150,
+  thumbnailMaxHeight = 300,
+}: VideoItemProps) => {
   const [hovered, setHovered] = useState(false)
 
   const { classes, cx } = useStyles()
   return (
     <Link
       className={cx(classes.root, classes[display])}
-      href={{ pathname: '/watch', query: { id: video.id } }}
+      href={href ?? { pathname: '/watch', query: { id: video.id } }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <VideoItemThumbnail
         controls={display === 'column'}
         showPlayerOnHover={hovered}
+        thumbnailMaxHeight={thumbnailMaxHeight}
+        thumbnailMinWidth={thumbnailMinWidth}
         video={video}
       />
       <VideoItemInfo showAvatar={display === 'column'} video={video} />

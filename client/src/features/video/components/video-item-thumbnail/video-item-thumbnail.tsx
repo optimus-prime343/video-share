@@ -10,17 +10,26 @@ export interface VideoItemThumbnailProps extends ComponentPropsWithoutRef<'video
   video: Video
   showPlayerOnHover?: boolean
   showControls?: boolean
+  thumbnailMinWidth: number
+  thumbnailMaxHeight: number
 }
 export const VideoItemThumbnail = ({
   video,
   showPlayerOnHover,
+  thumbnailMinWidth,
+  thumbnailMaxHeight,
   ...rest
 }: VideoItemThumbnailProps) => {
   const duration = useCalculateVideoDuration(video.url)
   const { classes } = useStyles()
 
   return (
-    <AspectRatio className={classes.thumbnail} mah={200} miw={150} ratio={16 / 9}>
+    <AspectRatio
+      className={classes.thumbnail}
+      mah={thumbnailMaxHeight}
+      miw={thumbnailMinWidth}
+      ratio={16 / 9}
+    >
       {showPlayerOnHover ? (
         <video autoPlay controls height={300} muted {...rest}>
           <source src={video.url} />
