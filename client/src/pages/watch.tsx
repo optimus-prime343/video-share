@@ -322,7 +322,7 @@ const WatchPage = () => {
               </Button>
               <Button
                 leftIcon={<IconDownload />}
-                onClick={handleDownloadVideo}
+                onClick={requiresLogin(handleDownloadVideo)}
                 variant='light'
               >
                 Download

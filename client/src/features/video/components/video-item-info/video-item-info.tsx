@@ -1,4 +1,4 @@
-import { Avatar, createStyles, Group, Text, Title, UnstyledButton } from '@mantine/core'
+import { Avatar, createStyles, Flex, Group, Text, Title, UnstyledButton } from '@mantine/core'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
 import type { MouseEvent } from 'react'
@@ -9,12 +9,14 @@ import { formatCount } from '@/core/utils/count'
 import { pluralize } from '@/core/utils/pluralize'
 
 import type { Video } from '../../schemas/video'
+import { VideoItemMenu } from '../video-item-menu'
 
 export interface VideoItemInfoProps {
   video: Video
   showAvatar?: boolean
+  showMenu: boolean
 }
-export const VideoItemInfo = ({ video, showAvatar = true }: VideoItemInfoProps) => {
+export const VideoItemInfo = ({ video, showAvatar = true, showMenu }: VideoItemInfoProps) => {
   const { classes } = useStyles()
   const router = useRouter()
 
@@ -32,10 +34,13 @@ export const VideoItemInfo = ({ video, showAvatar = true }: VideoItemInfoProps) 
           <Avatar alt={video.channel.name} radius='xl' src={video.channel.avatar} />
         </UnstyledButton>
       ) : null}
-      <div>
-        <Title className={classes.title} order={5} title={video.title}>
-          {video.title}
-        </Title>
+      <Flex direction='column' sx={{ flex: 1 }}>
+        <Group align='flex-start' noWrap>
+          <Title className={classes.title} order={5} sx={{ flex: 1 }} title={video.title}>
+            {video.title}
+          </Title>
+          {showMenu ? <VideoItemMenu id={video.id} title={video.title} /> : null}
+        </Group>
         <UnstyledButton onClick={navigateToChannelPage}>
           <Text my={4}>{video.channel.name}</Text>
         </UnstyledButton>
@@ -43,7 +48,7 @@ export const VideoItemInfo = ({ video, showAvatar = true }: VideoItemInfoProps) 
           {formatCount(video.views)} {pluralize('View', video.views)} {DOT}{' '}
           {dayjs(video.createdAt).fromNow()}{' '}
         </Text>
-      </div>
+      </Flex>
     </Group>
   )
 }

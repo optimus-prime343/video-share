@@ -14,6 +14,7 @@ import { authRouter } from './modules/auth/auth.routes.js'
 import { channelRouter } from './modules/channel/channel.routes.js'
 import { commentRouter } from './modules/comment/comment.routes.js'
 import { historyRouter } from './modules/history/history.routes.js'
+import { playListRouter } from './modules/playlist/playlist.routes.js'
 import { subscriptionRouter } from './modules/subscription/subscription.routes.js'
 import { videoRouter } from './modules/video/video.routes.js'
 
@@ -42,6 +43,7 @@ app.use('/api/v1/comment', commentRouter)
 app.use('/api/v1/subscription', subscriptionRouter)
 app.use('/api/v1/admin', adminRouter)
 app.use('/api/v1/history', historyRouter)
+app.use('/api/v1/playlist', playListRouter)
 
 // 404 error handler
 app.use('*', (req, res) => {

@@ -13,6 +13,7 @@ export interface VideoItemProps {
   thumbnailMinWidth?: number
   thumbnailMaxHeight?: number
   href?: Url
+  showMenuOnHover?: boolean
 }
 export const VideoItem = ({
   video,
@@ -20,6 +21,7 @@ export const VideoItem = ({
   display = 'column',
   thumbnailMinWidth = 150,
   thumbnailMaxHeight = 300,
+  showMenuOnHover = false,
 }: VideoItemProps) => {
   const [hovered, setHovered] = useState(false)
 
@@ -38,7 +40,11 @@ export const VideoItem = ({
         thumbnailMinWidth={thumbnailMinWidth}
         video={video}
       />
-      <VideoItemInfo showAvatar={display === 'column'} video={video} />
+      <VideoItemInfo
+        showAvatar={display === 'column'}
+        showMenu={showMenuOnHover && hovered}
+        video={video}
+      />
     </Link>
   )
 }
