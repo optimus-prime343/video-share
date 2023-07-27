@@ -114,7 +114,7 @@ const verifyAccount = expressAsyncHandler(async (req, res, next) => {
   })
 
   const url = new URL(process.env.FRONTEND_URL)
-  url.searchParams.append('verification-success', 'true')
+  url.searchParams.append('show-auth-dialog', 'true')
   res.redirect(url.toString())
 })
 const login = expressAsyncHandler(async (req, res, next) => {
@@ -199,7 +199,6 @@ const profile = expressAsyncHandler(async (req, res, _next) => {
         })
     })
     .catch(error => {
-      console.log('edasdasdas', error.message)
       if (error instanceof jsonwebtoken.TokenExpiredError) {
         // if refreshToken is expired, clear both the accessToken and the refreshToken from the client
         res.clearCookie(ACCESS_TOKEN_NAME)

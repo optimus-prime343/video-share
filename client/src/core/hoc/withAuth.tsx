@@ -7,15 +7,16 @@ import { useUser } from '@/features/auth/hooks/use-user'
 export const withAuth =
   // eslint-disable-next-line react/display-name
   (Component: ComponentType) => (props: ComponentPropsWithoutRef<typeof Component>) => {
-    const user = useUser()
+    const { data: user, isLoading: isUserLoading } = useUser()
     const router = useRouter()
-    if (user.isLoading) {
-      return <LoadingOverlay inset={0} pos='fixed' visible={user.isLoading} />
+    if (isUserLoading) {
+      return <LoadingOverlay inset={0} pos='fixed' visible={isUserLoading} />
     }
-    if (!user.data) {
+    if (!user) {
       router.push({
         pathname: '/',
         query: {
+          'show-auth-dialog': 'true',
           next: router.asPath,
         },
       })

@@ -1,6 +1,7 @@
 import { Box, Stack } from '@mantine/core'
 import { useCallback } from 'react'
 
+import { withAuth } from '@/core/hoc/withAuth'
 import { useHistory } from '@/features/history/hooks/use-history'
 import { VideoItem } from '@/features/video/components/video-item'
 
@@ -31,4 +32,4 @@ const HistoryPage = () => {
   )
 }
 
-export default HistoryPage
+export default withAuth(HistoryPage)

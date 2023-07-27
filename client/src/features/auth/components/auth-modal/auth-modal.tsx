@@ -35,7 +35,9 @@ export const AuthModal = () => {
       login.mutate(data, {
         onSuccess: async () => {
           await queryClient.invalidateQueries(USER_QUERY_KEY)
-          await router.replace(router.asPath.split('?')[0])
+          await router.replace(
+            (router.query.next as string | undefined) ?? router.asPath.split('?')[0]
+          )
           closeAuthModal()
         },
         onError: error => {

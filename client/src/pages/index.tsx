@@ -33,8 +33,8 @@ const HomePage = () => {
   )
 
   useEffect(() => {
-    const isVerificationSuccess = router.query['verification-success'] === 'true'
-    if (isVerificationSuccess) openAuthModal()
+    const showAuth = router.query['show-auth-dialog'] === 'true'
+    if (showAuth) openAuthModal()
   }, [openAuthModal, router.query])
 
   return (
