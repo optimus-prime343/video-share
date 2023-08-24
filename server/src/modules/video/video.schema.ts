@@ -6,7 +6,7 @@ import { FileSchema } from '../../core/schemas/file.js'
 export const GetVideosSchema = z.object({
   query: z.object({
     page: z.number({ coerce: true }).default(1),
-    perPage: z.number({ coerce: true }).default(10),
+    perPage: z.number({ coerce: true }).default(20),
     category: z.string().optional(),
     search: z.string().optional(),
   }),
@@ -34,7 +34,7 @@ export const CreateVideoSchema = z.object({
     category: z.string().nonempty(),
   }),
   files: z.object({
-    [THUMBNAIL_IMAGE_FIELD]: z.array(FileSchema.optional()),
+    [THUMBNAIL_IMAGE_FIELD]: z.array(FileSchema),
     [VIDEO_FIELD]: z.array(FileSchema),
   }),
 })

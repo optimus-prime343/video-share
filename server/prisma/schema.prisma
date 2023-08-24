@@ -35,7 +35,7 @@ model User {
   role               Role                @default(USER)
   status             Status              @default(INACTIVE)
   createdAt          DateTime            @default(now()) @map("created_at")
-  updatedAt          DateTime            @default(now()) @map("updated_at")
+  updatedAt          DateTime?           @updatedAt @map("updated_at")
   channel            Channel?
   comments           Comment[]
   sessions           Session[]
@@ -43,25 +43,27 @@ model User {
   likedVideos        LikedVideo[]
   dislikedVideos     DislikedVideo[]
   subscriptions      Subscription[]
+  histories          History[]
+  playlists          Playlist[]
 }
 
 model VerificationToken {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  expiresAt DateTime @map("expires_at")
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @map("user_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  id        String    @id @default(uuid())
+  token     String    @unique
+  expiresAt DateTime  @map("expires_at")
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @map("user_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 }
 
 model Session {
-  id           String   @id @default(uuid())
-  refreshToken String   @unique @map("refresh_token")
-  user         User     @relation(fields: [userId], references: [id])
-  userId       String   @map("user_id")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id           String    @id @default(uuid())
+  refreshToken String    @unique @map("refresh_token")
+  user         User      @relation(fields: [userId], references: [id])
+  userId       String    @map("user_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
 }
 
 model Channel {
@@ -74,26 +76,26 @@ model Channel {
   userId        String         @unique @map("user_id")
   videos        Video[]
   createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @default(now()) @map("updated_at")
+  updatedAt     DateTime?      @updatedAt @map("updated_at")
   subscriptions Subscription[]
 }
 
 model Subscription {
-  id        String   @id @default(uuid())
-  channelId String   @map("channel_id")
-  channel   Channel  @relation(fields: [channelId], references: [id])
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  id        String    @id @default(uuid())
+  channelId String    @map("channel_id")
+  channel   Channel   @relation(fields: [channelId], references: [id])
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 }
 
 model VideoCategory {
-  id        String   @id @default(uuid())
-  name      String   @unique
+  id        String    @id @default(uuid())
+  name      String    @unique
   videos    Video[]
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 }
 
 model Video {
@@ -112,39 +114,63 @@ model Video {
   channelId      String              @map("channel_id")
   comments       Comment[]
   createdAt      DateTime            @default(now()) @map("created_at")
-  updatedAt      DateTime            @default(now()) @map("updated_at")
+  updatedAt      DateTime?           @updatedAt @map("updated_at")
   likedVideos    LikedVideo[]
   dislikedVideos DislikedVideo[]
+  histories      History[]
+  playlists      Playlist[]
+}
+
+model History {
+  id        String    @id @default(uuid())
+  video     Video     @relation(fields: [videoId], references: [id])
+  videoId   String    @map("video_id")
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @map("user_id")
+  timestamp Int       @default(0) @map("timestamp")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+}
+
+model Playlist {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  videos      Video[]
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @map("user_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
 }
 
 model LikedVideo {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @map("user_id")
-  video     Video    @relation(fields: [videoId], references: [id])
-  videoId   String   @map("video_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @map("user_id")
+  video     Video     @relation(fields: [videoId], references: [id])
+  videoId   String    @map("video_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 }
 
 model DislikedVideo {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @map("user_id")
-  video     Video    @relation(fields: [videoId], references: [id])
-  videoId   String   @map("video_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @map("user_id")
+  video     Video     @relation(fields: [videoId], references: [id])
+  videoId   String    @map("video_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 }
 
 model Comment {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   text      String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @map("user_id")
-  video     Video    @relation(fields: [videoId], references: [id])
-  videoId   String   @map("video_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
-  channelId String?  @map("channel_id")
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @map("user_id")
+  video     Video     @relation(fields: [videoId], references: [id])
+  videoId   String    @map("video_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  channelId String?   @map("channel_id")
 }

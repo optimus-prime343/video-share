@@ -3,9 +3,9 @@ import multer from 'multer'
 
 import { THUMBNAIL_IMAGE_FIELD, VIDEO_FIELD } from '../../core/constants/strings.js'
 import { authRequired } from '../../core/middlewares/auth-required.js'
-import { nsfwTextFilter } from '../../core/middlewares/nsfw-text-filter.js'
 import { validateResource } from '../../core/middlewares/validate-resource.js'
-import { imageOrVideoFileFilter } from '../../core/utils/file.js'
+import { imageOrVideoFileFilter } from '../../core/utils/file-filters.js'
+import { fileDiskStorage } from '../../core/utils/file-storage.js'
 import {
   createVideo,
   dislikeVideo,
@@ -16,7 +16,6 @@ import {
   getVideos,
   likeVideo,
   updateViewCount,
-  watch,
 } from './video.controller.js'
 import {
   CreateVideoSchema,
@@ -29,8 +28,6 @@ import {
 } from './video.schema.js'
 
 const videoRouter = Router()
-
-videoRouter.get('/watch/:videoId', watch)
 
 videoRouter.get('/categories', getVideoCategories)
 videoRouter.get(
@@ -67,16 +64,16 @@ videoRouter.get('/:videoId', validateResource(GetVideoDetailsSchema), getVideoDe
 videoRouter.post(
   '/',
   authRequired,
-  multer({ fileFilter: imageOrVideoFileFilter }).fields([
+  multer({ storage: fileDiskStorage, fileFilter: imageOrVideoFileFilter }).fields([
     { name: VIDEO_FIELD, maxCount: 1 },
     { name: THUMBNAIL_IMAGE_FIELD, maxCount: 1 },
   ]),
   validateResource(CreateVideoSchema),
-  nsfwTextFilter([
-    (req): unknown => req.body.title,
-    (req): unknown => req.body.description,
-    (req): unknown => req.body.category,
-  ]),
+  // nsfwTextFilter([
+  //   (req): unknown => req.body.title,
+  //   (req): unknown => req.body.description,
+  //   (req): unknown => req.body.category,
+  // ]),
   createVideo,
 )
 

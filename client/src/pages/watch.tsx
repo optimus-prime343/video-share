@@ -37,10 +37,12 @@ import { useSubscribersCount } from '@/features/channel/hooks/use-subscribers-co
 import { CommentForm } from '@/features/comment/components/comment-form/comment-form'
 import { CommentItem } from '@/features/comment/components/comment-item'
 import { useComments } from '@/features/comment/hooks/use-comments'
+import { useCreateHistory } from '@/features/history/hooks/use-create-history'
 import { useCheckSubscriptionStatus } from '@/features/subscription/hooks/use-check-subscription-status'
 import { useSubscribe } from '@/features/subscription/hooks/use-subscribe'
 import { useUnsubscribe } from '@/features/subscription/hooks/use-unsubscribe'
-import { SuggestedVideoItem } from '@/features/video/components/suggested-video-item'
+import { VideoDetailSkeleton } from '@/features/video/components/video-detail-skeleton'
+import { VideoItem } from '@/features/video/components/video-item'
 import { useDislikeVideo } from '@/features/video/hooks/use-dislike-video'
 import { useLikeVideo } from '@/features/video/hooks/use-like-video'
 import { useSuggestedVideos } from '@/features/video/hooks/use-suggested-videos'
@@ -56,7 +58,7 @@ const WatchPage = () => {
   const playerRef = useRef<HTMLVmPlayerElement | null>(null)
   const videoId = useMemo(() => router.query?.id as string | undefined, [router.query?.id])
 
-  const { data: videoDetail } = useVideoDetail(videoId)
+  const { data: videoDetail, isLoading: isVideoDetailLoading } = useVideoDetail(videoId)
   const {
     data: suggestedVideosPages,
     hasNextPage: hasSuggestedVideosNextPage,
@@ -82,6 +84,7 @@ const WatchPage = () => {
   const dislikeVideo = useDislikeVideo()
   const subscribe = useSubscribe()
   const unsubscribe = useUnsubscribe()
+  const createHistory = useCreateHistory()
 
   const suggestedVideos = useMemo(
     () => suggestedVideosPages?.pages?.flatMap(page => page.videos) ?? [],
@@ -232,7 +235,27 @@ const WatchPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId])
 
-  if (!videoDetail || !videoId) return <p>Video not found</p> //TODO UPDATE UI
+  useEffect(() => {
+    if (!videoId) return
+    if (!user) return
+    const onRouteChangeStart = () =>
+      createHistory.mutate(
+        { videoId, timestamp: playerRef.current?.currentTime ?? 0 },
+        {
+          onSuccess: ({ data }) => {
+            console.log('History created', data)
+          },
+        }
+      )
+
+    router.events.on('routeChangeStart', onRouteChangeStart)
+    return () => {
+      router.events.off('routeChangeStart', onRouteChangeStart)
+    }
+  }, [createHistory, router.events, user, videoId])
+
+  if (isVideoDetailLoading) return <VideoDetailSkeleton />
+  if (!videoDetail) return <p>Video not found</p> //TODO UPDATE UI
 
   return (
     <div className={classes.container}>
@@ -242,7 +265,7 @@ const WatchPage = () => {
             currentTime={sharedTimeStamp}
             poster={videoDetail.thumbnail}
             ref={playerRef}
-            videoId={videoId}
+            src={videoDetail.url}
           />
           <Group position='apart'>
             <Title order={3}>{videoDetail.title}</Title>
@@ -299,7 +322,7 @@ const WatchPage = () => {
               </Button>
               <Button
                 leftIcon={<IconDownload />}
-                onClick={handleDownloadVideo}
+                onClick={requiresLogin(handleDownloadVideo)}
                 variant='light'
               >
                 Download
@@ -323,23 +346,28 @@ const WatchPage = () => {
             {pluralize('Comment', commentsPages?.pages.at(0)?.count ?? 0)}
           </Title>
           <InfiniteScroll
-            as={Stack}
-            fetchNextPage={fetchNextCommentsPage}
-            hasNextPage={hasCommentsNextPage}
-            isFetchingNextPage={isFetchingCommentsNextPage}
-            items={comments}
-            renderItem={comment => <CommentItem comment={comment} />}
-            spacing='xl'
-          />
+            hasMore={hasCommentsNextPage}
+            isLoadingMore={isFetchingCommentsNextPage}
+            onLoadMore={() => fetchNextCommentsPage()}
+          >
+            <Stack spacing='lg'>
+              {comments.map(comment => (
+                <CommentItem comment={comment} key={comment.id} />
+              ))}
+            </Stack>
+          </InfiniteScroll>
         </Stack>
         <InfiniteScroll
-          as={Stack}
-          fetchNextPage={fetchNextSuggestedVideosPage}
-          hasNextPage={hasSuggestedVideosNextPage}
-          isFetchingNextPage={isFetchingSuggestedVideosNextPage}
-          items={suggestedVideos}
-          renderItem={video => <SuggestedVideoItem video={video} />}
-        />
+          hasMore={hasSuggestedVideosNextPage}
+          isLoadingMore={isFetchingSuggestedVideosNextPage}
+          onLoadMore={() => fetchNextSuggestedVideosPage()}
+        >
+          <Stack spacing='lg'>
+            {suggestedVideos.map(suggestedVideo => (
+              <VideoItem display='row' key={suggestedVideo.id} video={suggestedVideo} />
+            ))}
+          </Stack>
+        </InfiniteScroll>
       </div>
     </div>
   )

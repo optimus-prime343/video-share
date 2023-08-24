@@ -1,15 +1,11 @@
-import { Button, FileInput, Stack, TextInput } from '@mantine/core'
+import { Button, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { CustomRichTextEditor } from '@/core/components/custom-rich-text-editor'
-import { PreviewImage } from '@/core/components/preview-image'
-import type {
-  Channel,
-  ChannelFormData} from '@/features/channel/schemas/channel';
-import {
-  ChannelFormSchema,
-} from '@/features/channel/schemas/channel'
+import { UploadFileInput } from '@/core/components/upload-file-input'
+import type { Channel, ChannelFormData } from '@/features/channel/schemas/channel'
+import { ChannelFormSchema } from '@/features/channel/schemas/channel'
 
 interface CommonChannelFormProps {
   isSubmitting?: boolean
@@ -37,6 +33,11 @@ export const ChannelForm = (props: ChannelFormProps) => {
     },
     validate: zodResolver(ChannelFormSchema),
   })
+  const isSubmitButtonDisabled = useMemo<boolean>(() => {
+    if (props.mode === 'edit') return !form.isDirty() || !form.isValid()
+    return !form.isValid() || !thumbnail || !avatar
+  }, [avatar, form, props.mode, thumbnail])
+
   const handleSubmit = useCallback(
     (data: ChannelFormData) => {
       const { name, description } = data
@@ -63,31 +64,24 @@ export const ChannelForm = (props: ChannelFormProps) => {
           onContentChange={content => form.setFieldValue('description', content)}
           placeholder='Enter your channel description'
         />
-        <FileInput
+        <UploadFileInput
           accept='image/*'
-          label='Thumbnail'
+          label='Upload channel thumbnail'
           onChange={setThumbnail}
-          placeholder='Select thumbnail'
-          value={thumbnail}
+          withAsterick
         />
-        <PreviewImage
-          alt='Thumbnail preview image'
-          file={thumbnail}
-          src={props.mode === 'edit' ? props.channel.thumbnail : undefined}
-        />
-        <FileInput
-          accept={'image/*'}
-          label='Avatar'
+        <UploadFileInput
+          accept='image/*'
+          label='Upload channel avatar'
           onChange={setAvatar}
-          placeholder='Select avatar'
-          value={avatar}
+          withAsterick
         />
-        <PreviewImage
-          alt='Avatar preview image'
-          file={avatar}
-          src={props.mode === 'edit' ? props.channel.avatar : undefined}
-        />
-        <Button loading={isSubmitting} maw='fit-content' type='submit'>
+        <Button
+          disabled={isSubmitButtonDisabled}
+          loading={isSubmitting}
+          maw='fit-content'
+          type='submit'
+        >
           {mode === 'create' ? 'Create Channel' : 'Edit Channel'}
         </Button>
       </Stack>

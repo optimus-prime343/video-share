@@ -1,8 +1,9 @@
-import { Badge, Button, FileInput, Group, Stack, TextInput } from '@mantine/core'
+import { Badge, Button, Group, Stack, TextInput } from '@mantine/core'
 import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useState } from 'react'
 
 import { CustomRichTextEditor } from '@/core/components/custom-rich-text-editor'
+import { UploadFileInput } from '@/core/components/upload-file-input'
 import type { VideoFormData } from '@/features/video/schemas/video'
 import { VideoFormSchema } from '@/features/video/schemas/video'
 
@@ -39,6 +40,17 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
     [form]
   )
 
+  const handleVideoFileChange = useCallback(
+    (file: File | null) => {
+      setVideoFile(file)
+      if (file) {
+        const [name, _extension] = file.name.split('.')
+        form.setFieldValue('title', name)
+      }
+    },
+    [form]
+  )
+
   const handleSubmit = useCallback(
     (data: VideoFormData) => {
       const { title, description, category } = data
@@ -69,29 +81,27 @@ const VideoForm = ({ onSubmit, isSubmitting }: VideoFormProps) => {
           {...form.getInputProps('category')}
         />
         <Group>{renderPopularCategories()}</Group>
-        <FileInput
+        <UploadFileInput
           accept='video/*'
-          clearable
-          label='Video'
-          onChange={setVideoFile}
-          placeholder='Upload your video'
-          value={videoFile}
-          withAsterisk
+          label='Upload your video'
+          onChange={handleVideoFileChange}
+          withAsterick
         />
         <CustomRichTextEditor
           content={form.values.description ?? ''}
           onContentChange={content => form.setFieldValue('description', content)}
           placeholder='Enter your video description'
         />
-        <FileInput
+        <UploadFileInput
           accept='image/*'
-          clearable
-          label='Thumbnail'
+          label='Upload your video thumbnail'
           onChange={setThumbnailFile}
-          placeholder='Upload your thumbnail'
-          value={thumbnailFile}
         />
-        <Button disabled={!form.isValid() || !videoFile} loading={isSubmitting} type='submit'>
+        <Button
+          disabled={!form.isValid() || !videoFile || !thumbnailFile}
+          loading={isSubmitting}
+          type='submit'
+        >
           Upload video
         </Button>
       </Stack>

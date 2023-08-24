@@ -1,20 +1,31 @@
-import crypto from 'node:crypto'
 import fs from 'node:fs/promises'
-import path from 'node:path'
 
-import type { File } from '../schemas/file.js'
+import type { UploadApiOptions } from 'cloudinary'
 
-export type UploadFileDir = 'thumbnails' | 'avatars' | 'videos'
+import { cloudinary } from '../lib/cloudinary.js'
 
-export const uploadFile = async (
-  file: File | undefined,
-  directory: UploadFileDir,
-): Promise<string | undefined> => {
-  if (file === undefined) return Promise.resolve(undefined)
-  const fileExt = path.extname(file.originalname)
-  const fileName = crypto.randomUUID() + fileExt
-  const uploadPathDb = `/${directory}/${fileName}`
-  const uploadPathFull = path.join(process.cwd(), 'public', uploadPathDb)
-  await fs.writeFile(uploadPathFull, file.buffer)
-  return uploadPathDb
+export type UploadFolder = 'videos' | 'thumbnails' | 'avatars' | 'profile'
+
+export interface UploadFileParams<TPath extends string | undefined> extends UploadApiOptions {
+  path: TPath
+  folder: UploadFolder
+  userId: string
+}
+
+export const uploadFile = async <TPath extends string | undefined>({
+  path,
+  folder,
+  userId,
+  ...rest
+}: UploadFileParams<TPath>): Promise<TPath> => {
+  const folderByUser = `${userId}/${folder}`
+  if (!path) return Promise.resolve(undefined) as unknown as TPath
+  const result = await cloudinary.uploader.upload(path, {
+    folder: folderByUser,
+    unique_filename: true,
+    overwrite: true,
+    ...rest,
+  })
+  await fs.unlink(path) // Delete the file from the server
+  return result.secure_url as unknown as TPath
 }
